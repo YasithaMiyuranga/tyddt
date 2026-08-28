@@ -463,6 +463,8 @@ Public Class credit
 
     Private Sub Credit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.KeyPreview = True
+        dtpDetailsStart.Value = DateTime.Now
+        dtpDetailsEnd.Value = DateTime.Now
         Customer_creditDataGridView1.ReadOnly = True
         
         SyncMissingManualCredits()
@@ -2127,6 +2129,11 @@ Public Class credit
                 filterStrings.Add("Credit_Amount = 0")
             End If
 
+            ' Filter by details date range picker
+            Dim startStr As String = dtpDetailsStart.Value.ToString("yyyy-MM-dd 00:00:00")
+            Dim endStr As String = dtpDetailsEnd.Value.ToString("yyyy-MM-dd 23:59:59")
+            filterStrings.Add(String.Format("CreditDate >= #{0}# AND CreditDate <= #{1}#", startStr, endStr))
+
             dv.RowFilter = String.Join(" AND ", filterStrings)
             dv.Sort = "CusName ASC, CreditDate DESC"
             DataGridView1.DataSource = dv
@@ -3528,4 +3535,14 @@ Public Class credit
             If MySqlConn.State = ConnectionState.Open Then MySqlConn.Close()
         End Try
     End Sub
+
+    Private Sub dtpDetailsStart_ValueChanged(sender As Object, e As EventArgs) Handles dtpDetailsStart.ValueChanged
+        ApplyDebitFilters()
+    End Sub
+
+    Private Sub dtpDetailsEnd_ValueChanged(sender As Object, e As EventArgs) Handles dtpDetailsEnd.ValueChanged
+        ApplyDebitFilters()
+    End Sub
+
+
 End Class
