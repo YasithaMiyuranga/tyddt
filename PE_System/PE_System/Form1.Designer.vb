@@ -46,9 +46,9 @@ Partial Class Form1
         Me.Panel2.Controls.Add(Me.lblUsername)
         Me.Panel2.Controls.Add(Me.TextBox4)
         Me.Panel2.Location = New System.Drawing.Point(40, 20)
-        Me.Panel2.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Panel2.Margin = New System.Windows.Forms.Padding(6)
         Me.Panel2.Name = "Panel2"
-        Me.Panel2.Size = New System.Drawing.Size(805, 498)
+        Me.Panel2.Size = New System.Drawing.Size(759, 398)
         Me.Panel2.TabIndex = 87
         '
         'btnClear
@@ -58,8 +58,8 @@ Partial Class Form1
         Me.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnClear.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnClear.ForeColor = System.Drawing.Color.White
-        Me.btnClear.Location = New System.Drawing.Point(493, 408)
-        Me.btnClear.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.btnClear.Location = New System.Drawing.Point(475, 306)
+        Me.btnClear.Margin = New System.Windows.Forms.Padding(6)
         Me.btnClear.Name = "btnClear"
         Me.btnClear.Size = New System.Drawing.Size(156, 65)
         Me.btnClear.TabIndex = 88
@@ -73,8 +73,8 @@ Partial Class Form1
         Me.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnLogin.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLogin.ForeColor = System.Drawing.Color.Black
-        Me.btnLogin.Location = New System.Drawing.Point(281, 408)
-        Me.btnLogin.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.btnLogin.Location = New System.Drawing.Point(263, 306)
+        Me.btnLogin.Margin = New System.Windows.Forms.Padding(6)
         Me.btnLogin.Name = "btnLogin"
         Me.btnLogin.Size = New System.Drawing.Size(156, 65)
         Me.btnLogin.TabIndex = 87
@@ -85,8 +85,8 @@ Partial Class Form1
         '
         Me.TextBox3.BackColor = System.Drawing.Color.Beige
         Me.TextBox3.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox3.Location = New System.Drawing.Point(281, 260)
-        Me.TextBox3.Margin = New System.Windows.Forms.Padding(13, 13, 13, 13)
+        Me.TextBox3.Location = New System.Drawing.Point(263, 158)
+        Me.TextBox3.Margin = New System.Windows.Forms.Padding(13)
         Me.TextBox3.Name = "TextBox3"
         Me.TextBox3.Size = New System.Drawing.Size(455, 39)
         Me.TextBox3.TabIndex = 74
@@ -97,7 +97,7 @@ Partial Class Form1
         Me.lblPassword.BackColor = System.Drawing.Color.Transparent
         Me.lblPassword.Font = New System.Drawing.Font("Segoe UI", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblPassword.ForeColor = System.Drawing.Color.CornflowerBlue
-        Me.lblPassword.Location = New System.Drawing.Point(42, 338)
+        Me.lblPassword.Location = New System.Drawing.Point(24, 236)
         Me.lblPassword.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblPassword.Name = "lblPassword"
         Me.lblPassword.Size = New System.Drawing.Size(147, 38)
@@ -110,7 +110,7 @@ Partial Class Form1
         Me.lblUsername.BackColor = System.Drawing.Color.Transparent
         Me.lblUsername.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Bold)
         Me.lblUsername.ForeColor = System.Drawing.Color.CornflowerBlue
-        Me.lblUsername.Location = New System.Drawing.Point(42, 257)
+        Me.lblUsername.Location = New System.Drawing.Point(24, 155)
         Me.lblUsername.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblUsername.Name = "lblUsername"
         Me.lblUsername.Size = New System.Drawing.Size(156, 36)
@@ -122,22 +122,22 @@ Partial Class Form1
         Me.TextBox4.BackColor = System.Drawing.Color.Beige
         Me.TextBox4.Cursor = System.Windows.Forms.Cursors.AppStarting
         Me.TextBox4.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox4.Location = New System.Drawing.Point(281, 329)
-        Me.TextBox4.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TextBox4.Location = New System.Drawing.Point(263, 227)
+        Me.TextBox4.Margin = New System.Windows.Forms.Padding(4)
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(455, 42)
         Me.TextBox4.TabIndex = 28
         '
         'GroupBox1
         '
-        Me.GroupBox1.BackgroundImage = Global.PE_System.My.Resources.Resources.S
+        Me.GroupBox1.BackgroundImage = CType(resources.GetObject("GroupBox1.BackgroundImage"), System.Drawing.Image)
         Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.GroupBox1.Location = New System.Drawing.Point(376, 22)
+        Me.GroupBox1.Location = New System.Drawing.Point(344, 18)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Size = New System.Drawing.Size(226, 213)
-        Me.GroupBox1.TabIndex = 90
+        Me.GroupBox1.Size = New System.Drawing.Size(218, 124)
+        Me.GroupBox1.TabIndex = 92
         Me.GroupBox1.TabStop = False
         '
         'Form1
@@ -146,10 +146,10 @@ Partial Class Form1
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoScroll = True
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(44, Byte), Integer), CType(CType(62, Byte), Integer), CType(CType(80, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(845, 522)
+        Me.ClientSize = New System.Drawing.Size(812, 425)
         Me.Controls.Add(Me.Panel2)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "Form1"
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
