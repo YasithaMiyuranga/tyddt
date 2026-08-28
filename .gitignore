@@ -1,0 +1,131 @@
+## Visual Studio ##
+.vs/
+[Oo]bj/
+[Bb]in/
+[Dd]ebug/
+#[Mm]igration/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Test Adapter Paths
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# Build results
+[Dd]ebugPs/
+[Rr]eleasePs/
+dlldata.c
+
+# DNA Tech integration
+*.dna
+*.license
+
+# Windows Installer files from WiX.
+*.cab
+*.msi
+*.msm
+*.msp
+
+# MSTest test Results
+[Tt]est[Rr]esults*/
+*.trx
+
+## Visual Studio Code ##
+.vscode/
+
+## Windows ##
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+## .NET Core ##
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Other ##
+*.log
+*.sqlite
+*.db
+
+## Publish Web Output ##
+*.[Pp]ublish.xml
+*.azurePubxml
+# Note: Comment the next line if you want to checkin your web deploy settings, 
+# but database connection strings (with passwords) will be unencrypted
+*.pubxml
+*.publishproj
+
+## Microsoft Azure Web App publish settings. Comment the next line if you want to checkin your publish settings,
+# but note that these XML files can contain your secrets.
+*.PublishSettings
+
+## NuGet Packages ##
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/[Pp]ackages/repositories.config
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+## Microsoft Office Temporary Files ##
+~$*
+
+## ReSharper ##
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## TeamCity ##
+_TeamCity*
+
+## DotCover ##
+*.dotCover
+
+## NCrunch ##
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+## MightyMoose ##
+*.mm.*
+AutoTest.Net/
+
+## Others ##
+*.[Cc]ache
+[Cc]ache/
+![Pp]ackages.config
+!packages.config
+!nuget.config
+!NuGet.Config
+*.tmp
+*.bak
+*.swp
+*.[Mm]igration[Bb]ackup
