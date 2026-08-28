@@ -2911,9 +2911,9 @@ Public Class TempSales
                                 Dim mainSql As String
                                 If isUpdate Then
                                     If isQuote Then
-                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, updated_at=@now_local, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
+                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, timestamps=@now_local, updated_at=@now_local, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
                                     Else
-                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, cheque_no=@cheque_no, bank_id=@bank_id, po_number=@po, cheque_balance_due=@chq_bal, credit_balance_due=@crd_bal, partial_cash=@p_cash, updated_at=@now_local, cash_status=@c_status, order_user_id=@o_uid, collector_user_id=@coll_uid, change_action=@bal_action, adv_pay_amount=@adv_pay_amount, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
+                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, cheque_no=@cheque_no, bank_id=@bank_id, po_number=@po, cheque_balance_due=@chq_bal, credit_balance_due=@crd_bal, partial_cash=@p_cash, timestamps=@now_local, updated_at=@now_local, cash_status=@c_status, order_user_id=@o_uid, collector_user_id=@coll_uid, change_action=@bal_action, adv_pay_amount=@adv_pay_amount, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
                                     End If
                                 Else
                                     If isQuote Then
@@ -3117,12 +3117,8 @@ Public Class TempSales
 
                                         If creditBalanceDue > 0 Then
                                             If existingCreditId > 0 Then
-                                                ' Update existing record — preserve original timestamps to prevent re-dating on duplicate print
-                                                If isUpdate Then
-                                                    syncSql = "UPDATE customer_credit SET amount = @amt, is_active = 1 WHERE id = @id"
-                                                Else
-                                                    syncSql = "UPDATE customer_credit SET amount = @amt, timestamps = @now, is_active = 1 WHERE id = @id"
-                                                End If
+                                                ' Update existing record — save selected/edited sale date to customer_credit timestamps too
+                                                syncSql = "UPDATE customer_credit SET amount = @amt, timestamps = @now, is_active = 1 WHERE id = @id"
                                             Else
                                                 ' Insert new record — only for truly new invoices
                                                 If Not isUpdate Then
@@ -3330,10 +3326,11 @@ Public Class TempSales
                                         creditInvNo = printedInvNo
                                     End If
                                     Dim updateCreditSql As String =
-                                        "UPDATE customer_credit SET amount = @newAmt WHERE inv_no = @inv"
+                                        "UPDATE customer_credit SET amount = @newAmt, timestamps = @now WHERE inv_no = @inv"
                                     Using cmdUpdateCredit As New MySqlCommand(updateCreditSql, conn, dbTrans)
                                         cmdUpdateCredit.Parameters.AddWithValue("@newAmt", creditBalanceDue)
                                         cmdUpdateCredit.Parameters.AddWithValue("@inv", creditInvNo)
+                                        cmdUpdateCredit.Parameters.AddWithValue("@now", dtpSaleDate.Value)
                                         cmdUpdateCredit.ExecuteNonQuery()
                                     End Using
                                 End If
@@ -6020,7 +6017,7 @@ Public Class TempSales
                 filterSql &= " AND t.status LIKE @filterStatus"
             End If
             If useDate Then
-                filterSql &= " AND DATE(t.timestamps) = @filterDate"
+                filterSql &= " AND (DATE(t.timestamps) = @filterDate OR DATE(t.updated_at) = @filterDate)"
             End If
 
             Dim custFilter As String = ""
@@ -6043,7 +6040,7 @@ Public Class TempSales
 
             Dim selectCols As String = "SELECT t.id, t.inv_no as 'Invoice No', t.printed_inv_no as 'Printed No', t.billing_type as 'B.Type', t.inv_type as 'Inv Type', t.payment_type as 'Payment', t.status as 'Status', t.grand_total as 'Total', t.advance_payment as 'Advance', t.paid_amount as 'Paid', t.balance_due as 'Balance', t.timestamps as 'Date'"
 
-            Dim innerCols As String = "SELECT id, inv_no, printed_inv_no, billing_type, inv_type, payment_type, status, grand_total, advance_payment, paid_amount, balance_due, timestamps, customer_id, is_rgr"
+            Dim innerCols As String = "SELECT id, inv_no, printed_inv_no, billing_type, inv_type, payment_type, status, grand_total, advance_payment, paid_amount, balance_due, timestamps, customer_id, is_rgr, updated_at"
             Dim combinedTable As String = "( " & innerCols & " FROM billing UNION ALL " & innerCols & " FROM quotation_billing ) as t"
 
             Dim localSql = selectCols & " FROM " & combinedTable & " LEFT JOIN customer c ON t.customer_id = c.id WHERE 1=1" & filterSql & custFilter & rgrFilter & " ORDER BY t.timestamps DESC"

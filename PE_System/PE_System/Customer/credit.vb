@@ -463,8 +463,10 @@ Public Class credit
 
     Private Sub Credit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.KeyPreview = True
+        StartDate.Value = DateTime.Now
+        EndDate.Value = DateTime.Now.AddDays(1)
         dtpDetailsStart.Value = DateTime.Now
-        dtpDetailsEnd.Value = DateTime.Now
+        dtpDetailsEnd.Value = DateTime.Now.AddDays(1)
         Customer_creditDataGridView1.ReadOnly = True
         
         SyncMissingManualCredits()
