@@ -1804,14 +1804,57 @@ Public Class credit
     Private Sub DataGridView1_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellDoubleClick
         If e.RowIndex >= 0 Then
             Dim row As DataGridViewRow = DataGridView1.Rows(e.RowIndex)
-            Dim customerName As String = row.Cells("CusName").Value.ToString()
+            Dim invNo As String = If(row.Cells("inv_no").Value IsNot Nothing, row.Cells("inv_no").Value.ToString(), "")
             
-            ' Set the filter text which triggers ApplyDebitFilters
-            filter_name.Text = customerName
-            
-            ' Explicitly hide the suggestion panels that may have been opened by the single-click event
-            Panel2.Visible = False
-            Panel3.Visible = False
+            If Not String.IsNullOrEmpty(invNo) Then
+                Dim billingId As String = ""
+                Try
+                    If conn.State = ConnectionState.Open Then conn.Close()
+                    conn.Open()
+                    Using cmd As New MySqlCommand("SELECT id FROM billing WHERE inv_no = @inv LIMIT 1", conn)
+                        cmd.Parameters.AddWithValue("@inv", invNo)
+                        Dim res = cmd.ExecuteScalar()
+                        If res IsNot Nothing AndAlso res IsNot DBNull.Value Then
+                            billingId = res.ToString()
+                        End If
+                    End Using
+                    
+                    If String.IsNullOrEmpty(billingId) Then
+                        Using cmd As New MySqlCommand("SELECT id FROM quotation_billing WHERE inv_no = @inv LIMIT 1", conn)
+                            cmd.Parameters.AddWithValue("@inv", invNo)
+                            Dim res = cmd.ExecuteScalar()
+                            If res IsNot Nothing AndAlso res IsNot DBNull.Value Then
+                                billingId = res.ToString()
+                            End If
+                        End Using
+                    End If
+                    conn.Close()
+                Catch ex As Exception
+                    If conn.State = ConnectionState.Open Then conn.Close()
+                End Try
+                
+                If Not String.IsNullOrEmpty(billingId) Then
+                    Dim mainStart As Start = TryCast(Me.MdiParent, Start)
+                    If mainStart IsNot Nothing Then
+                        Dim tempSalesForm As TempSales = Nothing
+                        For Each child As Form In mainStart.MdiChildren
+                            If TypeOf child Is TempSales Then
+                                tempSalesForm = DirectCast(child, TempSales)
+                                Exit For
+                            End If
+                        Next
+                        
+                        If tempSalesForm Is Nothing Then
+                            tempSalesForm = New TempSales()
+                            mainStart.OpenMdiForm(tempSalesForm)
+                        Else
+                            tempSalesForm.BringToFront()
+                        End If
+                        
+                        tempSalesForm.LoadInvoiceForEditing(billingId, invNo)
+                    End If
+                End If
+            End If
         End If
     End Sub
 
