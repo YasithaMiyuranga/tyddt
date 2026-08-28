@@ -689,6 +689,7 @@ Public Class TempSales
         CheckBoxRetail.Checked = False
         CheckBoxWholesale.Checked = False
         chkKeepStoreCredit.Visible = False ' Hidden per user request
+        CheckBoxPrintAsRetail.Visible = False
         btnEl.Visible = True ' Always visible by default
         btnEl.Text = "EL" ' Initialize text to EL since isElBill is True
         ' Set Default Cashier to currently logged in user
@@ -906,9 +907,15 @@ Public Class TempSales
         If isEditingHistory Then
             If btnClear IsNot Nothing Then btnClear.Visible = False
             If btnEl IsNot Nothing Then btnEl.Visible = False
+            cmbBillingType.Enabled = False
+            dgvPaymentMethod.Enabled = False
+            txtPaymentMethod.Enabled = False
         Else
             If btnClear IsNot Nothing Then btnClear.Visible = True
             If btnEl IsNot Nothing Then btnEl.Visible = True
+            cmbBillingType.Enabled = True
+            dgvPaymentMethod.Enabled = True
+            txtPaymentMethod.Enabled = True
         End If
 
         ' Store credit logic removed per user request
@@ -6045,7 +6052,7 @@ Public Class TempSales
                 filterSql &= " AND t.status LIKE @filterStatus"
             End If
             If useDate Then
-                filterSql &= " AND (DATE(IFNULL(t.complete_date, t.timestamps)) = @filterDate)"
+                filterSql &= " AND (DATE(t.timestamps) = @filterDate)"
             End If
 
             Dim custFilter As String = ""
