@@ -423,6 +423,17 @@ Partial Class Start
             StockToolStripMenuItem1.Visible = False
             FinancialTerminalToolStripMenuItem.Visible = False
         End If
+
+        ' Force hide specific tabs requested by the user
+        HomeToolStripMenuItem.Visible = False
+        StockRequestToolStripMenuItem.Visible = False
+        StockTransferToolStripMenuItem.Visible = False
+        PreviousPurchaseRequestsToolStripMenuItem.Visible = False
+        PrettyToolStripMenuItem.Visible = False
+        FinancialTerminalToolStripMenuItem.Visible = False
+        AccountingsToolStripMenuItem.Visible = False
+        CurrentStockToolStripMenuItem.Visible = False
+        BillDetailsToolStripMenuItem.Visible = False
     End Sub
 
     ' --- Form Life-cycle ---
