@@ -95,7 +95,7 @@ Module Module1
         End Try
     End Sub
 
-    Public ConnStr As String = "server=localhost;userid=root;password=sa@123;database=stock_management;Convert Zero Datetime=True"
+    Public ConnStr As String = "server=localhost;userid=root;password=Yasitha@123;database=stock_management;Convert Zero Datetime=True"
     ' ConnStr As String = "server=localhost;userid=root;password=0616;database=stock_management;Convert Zero Datetime=True"
     ' Public ConnStr As String = "server=192.168.8.196;userid=root;password=SERVER@123;database=stock_management;Convert Zero Datetime=True"
     ' Public ConnStr As String = "server=192.168.1.27;userid=pe_admin;password=Password@123;database=stock_management;Convert Zero Datetime=True"
