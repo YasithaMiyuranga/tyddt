@@ -86,6 +86,7 @@ Public Class TempSales
         Public LoadedHistoryDate As DateTime
         Public OriginalStatus As String
         Public OriginalBillingType As String
+        Public SaleDate As DateTime
     End Class
 
     Private Sub ResetStuckSessionsForThisPC()
@@ -695,7 +696,7 @@ Public Class TempSales
 
         ' Enable KeyPreview for shortcuts
         Me.KeyPreview = True
-        ' DateTimePicker1.Value = DateTime.Now (removed)
+        dtpSaleDate.Value = DateTime.Now
 
         ' Enable Double Buffering to fix flickering/shaking
         EnableDoubleBuffered(DataGridView2)
@@ -1033,6 +1034,7 @@ Public Class TempSales
         data.LoadedHistoryDate = loadedHistoryDate
         data.OriginalStatus = originalStatusValue
         data.OriginalBillingType = originalBillingType
+        data.SaleDate = dtpSaleDate.Value
 
         AllSlots(id) = data
         ' Also sync DB so other slots know what this slot is intending to be
@@ -1228,11 +1230,13 @@ Public Class TempSales
                 isEditingHistory = AllSlots(id).IsEditingHistory
                 loadedHistoryInvNo = AllSlots(id).LoadedHistoryInvNo
                 originalStatusValue = AllSlots(id).OriginalStatus
+                dtpSaleDate.Value = AllSlots(id).SaleDate
             Else
                 InvDetailsPanel.Visible = False
                 isEditingHistory = False
                 loadedHistoryInvNo = ""
                 originalStatusValue = ""
+                dtpSaleDate.Value = DateTime.Now
             End If
 
             ' Apply initial UI visibility based on the restored state (above)
@@ -2894,7 +2898,7 @@ Public Class TempSales
                                         Using cmdBackup As New MySqlCommand(backupMainSql, conn, dbTrans)
                                             cmdBackup.Parameters.AddWithValue("@bid", billingId)
                                             cmdBackup.Parameters.AddWithValue("@revised_by", If(cmbCashier.SelectedValue Is Nothing, DBNull.Value, cmbCashier.SelectedValue))
-                                            cmdBackup.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                            cmdBackup.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                             cmdBackup.ExecuteNonQuery()
                                         End Using
                                     Catch ex As Exception
@@ -2920,7 +2924,7 @@ Public Class TempSales
                                 End If
 
                                 Using cmdMain As New MySqlCommand(mainSql, conn, dbTrans)
-                                    cmdMain.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                    cmdMain.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                     If isUpdate Then
                                         cmdMain.Parameters.AddWithValue("@id", billingId)
                                         cmdMain.Parameters.AddWithValue("@c_id", If(String.IsNullOrEmpty(selectedCustomerId), DBNull.Value, selectedCustomerId))
@@ -3137,7 +3141,7 @@ Public Class TempSales
                                                 cmdSync.Parameters.AddWithValue("@amt", creditBalanceDue)
                                                 cmdSync.Parameters.AddWithValue("@cid", selectedCustomerId)
                                                 cmdSync.Parameters.AddWithValue("@inv", creditInvNo)
-                                                cmdSync.Parameters.AddWithValue("@now", DateTime.Now)
+                                                cmdSync.Parameters.AddWithValue("@now", dtpSaleDate.Value)
                                                 cmdSync.Parameters.AddWithValue("@id", existingCreditId)
                                                 cmdSync.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                                 cmdSync.ExecuteNonQuery()
@@ -3159,7 +3163,7 @@ Public Class TempSales
                                                     cmdNote.Parameters.AddWithValue("@cid", selectedCustomerId)
                                                     cmdNote.Parameters.AddWithValue("@inv", existingInvNo)
                                                     cmdNote.Parameters.AddWithValue("@amt", changeAmt)
-                                                    cmdNote.Parameters.AddWithValue("@now", DateTime.Now)
+                                                    cmdNote.Parameters.AddWithValue("@now", dtpSaleDate.Value)
                                                     cmdNote.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                                     cmdNote.ExecuteNonQuery()
                                                 End Using
@@ -3176,7 +3180,7 @@ Public Class TempSales
                                                     cmdPay.Parameters.AddWithValue("@cid", selectedCustomerId)
                                                     cmdPay.Parameters.AddWithValue("@cname", txtSalesRep.Text)
                                                     cmdPay.Parameters.AddWithValue("@amt", changeAmt)
-                                                    cmdPay.Parameters.AddWithValue("@now", DateTime.Now)
+                                                    cmdPay.Parameters.AddWithValue("@now", dtpSaleDate.Value)
                                                     cmdPay.Parameters.AddWithValue("@inv", "Settled by " & existingInvNo)
                                                     cmdPay.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                                     cmdPay.ExecuteNonQuery()
@@ -3298,7 +3302,7 @@ Public Class TempSales
                                             cmdAdj.Parameters.AddWithValue("@inv_no", existingInvNo)
                                             cmdAdj.Parameters.AddWithValue("@diff", diffAmount)
                                             cmdAdj.Parameters.AddWithValue("@cid", authId)
-                                            cmdAdj.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                            cmdAdj.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                             cmdAdj.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                             cmdAdj.ExecuteNonQuery()
                                         End Using
@@ -3352,7 +3356,7 @@ Public Class TempSales
                                         cmdBackup.Parameters.AddWithValue("@bid", billingId)
                                         cmdBackup.Parameters.AddWithValue("@inv_no", existingInvNo)
                                         cmdBackup.Parameters.AddWithValue("@user_id", If(cmbCashier.SelectedValue Is Nothing, DBNull.Value, cmbCashier.SelectedValue))
-                                        cmdBackup.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                        cmdBackup.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                         cmdBackup.ExecuteNonQuery()
                                     End Using
                                     ' -----------------------------------------
@@ -3376,7 +3380,7 @@ Public Class TempSales
                                                             cmdHead.Parameters.AddWithValue("@cus", If(String.IsNullOrEmpty(selectedCustomerId), DBNull.Value, selectedCustomerId))
                                                             cmdHead.Parameters.AddWithValue("@ctype", bType) ' Use dynamic billing type
                                                             cmdHead.Parameters.AddWithValue("@uid", If(cmbCashier.SelectedValue Is Nothing, DBNull.Value, cmbCashier.SelectedValue))
-                                                            cmdHead.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                                            cmdHead.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                                             salesReturnId = Convert.ToInt32(cmdHead.ExecuteScalar())
                                                         End Using
                                                     End If
@@ -3512,7 +3516,7 @@ Public Class TempSales
                                                                 cmdIns.Parameters.AddWithValue("@avg", If(itemCost > 0, itemCost, uPrice))
                                                                 cmdIns.Parameters.AddWithValue("@sell", uPrice)
                                                                 cmdIns.Parameters.AddWithValue("@rem", remainingToDeduct)
-                                                                cmdIns.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                                                cmdIns.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                                                 cmdIns.Parameters.AddWithValue("@locid", locationId)
                                                                 cmdIns.ExecuteNonQuery()
                                                             End Using
@@ -3534,7 +3538,7 @@ Public Class TempSales
                                                             cmdIns.Parameters.AddWithValue("@wsell", uPrice)
                                                             cmdIns.Parameters.AddWithValue("@rsell", uPrice)
                                                             cmdIns.Parameters.AddWithValue("@ret_qty", Math.Abs(qtyDiff))
-                                                            cmdIns.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                                            cmdIns.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                                             cmdIns.ExecuteNonQuery()
                                                         End Using
                                                     End If
@@ -3571,7 +3575,7 @@ Public Class TempSales
                                             cmdDaily.Parameters.AddWithValue("@bit", currentBillingItemId)
                                             cmdDaily.Parameters.AddWithValue("@amt", rowTotalVal)
                                             cmdDaily.Parameters.AddWithValue("@prof", rowTotalVal - (itemCost * qty))
-                                            cmdDaily.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                            cmdDaily.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
                                             cmdDaily.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                             cmdDaily.ExecuteNonQuery()
                                         End Using
@@ -4094,6 +4098,7 @@ Public Class TempSales
         txtCusVatId.Text = ""
         txtCreditLimit.Text = "0.00"
         dtpCreditPeriod.Value = DateTime.Now
+        dtpSaleDate.Value = DateTime.Now
         selectedCustomerId = ""
         isWalletApplied = False
         lblWalletValue.Text = "0.00"

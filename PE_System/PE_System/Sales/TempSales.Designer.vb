@@ -45,6 +45,8 @@ Partial Class TempSales
         Dim Label8 As System.Windows.Forms.Label
         Dim Label7 As System.Windows.Forms.Label
         Me.LabelVatBalance = New System.Windows.Forms.Label()
+        Me.lblSaleDate = New System.Windows.Forms.Label()
+        Me.dtpSaleDate = New System.Windows.Forms.DateTimePicker()
         Me.LabelBillingType = New System.Windows.Forms.Label()
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.btnSaveRGR = New System.Windows.Forms.Button()
@@ -219,7 +221,7 @@ Partial Class TempSales
         Label2.AutoSize = True
         Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Label2.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Label2.Location = New System.Drawing.Point(861, 52)
+        Label2.Location = New System.Drawing.Point(863, 53)
         Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label2.Name = "Label2"
         Label2.Size = New System.Drawing.Size(44, 26)
@@ -231,7 +233,7 @@ Partial Class TempSales
         Label31.AutoSize = True
         Label31.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Label31.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Label31.Location = New System.Drawing.Point(1116, 53)
+        Label31.Location = New System.Drawing.Point(1113, 53)
         Label31.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label31.Name = "Label31"
         Label31.Size = New System.Drawing.Size(88, 26)
@@ -255,7 +257,7 @@ Partial Class TempSales
         Label27.AutoSize = True
         Label27.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Label27.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Label27.Location = New System.Drawing.Point(566, 57)
+        Label27.Location = New System.Drawing.Point(567, 53)
         Label27.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label27.Name = "Label27"
         Label27.Size = New System.Drawing.Size(46, 26)
@@ -291,7 +293,7 @@ Partial Class TempSales
         Label36.AutoSize = True
         Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Label36.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Label36.Location = New System.Drawing.Point(662, 54)
+        Label36.Location = New System.Drawing.Point(665, 53)
         Label36.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label36.Name = "Label36"
         Label36.Size = New System.Drawing.Size(134, 26)
@@ -962,6 +964,8 @@ Partial Class TempSales
         Me.GroupBox3.Controls.Add(Me.lblCustomerAddress)
         Me.GroupBox3.Controls.Add(Me.txtCashierID)
         Me.GroupBox3.Controls.Add(Me.LabelAccountOutstandingHeader)
+        Me.GroupBox3.Controls.Add(Me.lblSaleDate)
+        Me.GroupBox3.Controls.Add(Me.dtpSaleDate)
         Me.GroupBox3.ForeColor = System.Drawing.Color.Black
         Me.GroupBox3.Location = New System.Drawing.Point(4, 0)
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -1176,6 +1180,26 @@ Partial Class TempSales
         Me.dtpCreditPeriod.Size = New System.Drawing.Size(192, 28)
         Me.dtpCreditPeriod.TabIndex = 113
         '
+        'lblSaleDate
+        '
+        Me.lblSaleDate.AutoSize = True
+        Me.lblSaleDate.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSaleDate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.lblSaleDate.Location = New System.Drawing.Point(1170, 45)
+        Me.lblSaleDate.Name = "lblSaleDate"
+        Me.lblSaleDate.Size = New System.Drawing.Size(53, 25)
+        Me.lblSaleDate.Text = "Date"
+        '
+        'dtpSaleDate
+        '
+        Me.dtpSaleDate.CustomFormat = "yyyy-MM-dd"
+        Me.dtpSaleDate.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!)
+        Me.dtpSaleDate.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.dtpSaleDate.Location = New System.Drawing.Point(1175, 78)
+        Me.dtpSaleDate.Name = "dtpSaleDate"
+        Me.dtpSaleDate.Size = New System.Drawing.Size(140, 28)
+        '
+        '
         'btnAddCustomer
         '
         Me.btnAddCustomer.BackColor = System.Drawing.Color.DodgerBlue
@@ -1358,7 +1382,7 @@ Partial Class TempSales
         'ComboBoxVat
         '
         Me.ComboBoxVat.FormattingEnabled = True
-        Me.ComboBoxVat.Location = New System.Drawing.Point(1334, 79)
+        Me.ComboBoxVat.Location = New System.Drawing.Point(1326, 82)
         Me.ComboBoxVat.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ComboBoxVat.Name = "ComboBoxVat"
         Me.ComboBoxVat.Size = New System.Drawing.Size(99, 33)
@@ -1369,7 +1393,7 @@ Partial Class TempSales
         Me.LabelVat.AutoSize = True
         Me.LabelVat.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelVat.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.LabelVat.Location = New System.Drawing.Point(1330, 53)
+        Me.LabelVat.Location = New System.Drawing.Point(1326, 53)
         Me.LabelVat.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelVat.Name = "LabelVat"
         Me.LabelVat.Size = New System.Drawing.Size(54, 26)
@@ -1380,7 +1404,7 @@ Partial Class TempSales
         '
         Me.txtItemDiscountVal.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.txtItemDiscountVal.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtItemDiscountVal.Location = New System.Drawing.Point(945, 82)
+        Me.txtItemDiscountVal.Location = New System.Drawing.Point(939, 82)
         Me.txtItemDiscountVal.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtItemDiscountVal.Name = "txtItemDiscountVal"
         Me.txtItemDiscountVal.ReadOnly = True
@@ -1392,7 +1416,7 @@ Partial Class TempSales
         Me.LabelDiscVal.AutoSize = True
         Me.LabelDiscVal.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LabelDiscVal.ForeColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
-        Me.LabelDiscVal.Location = New System.Drawing.Point(940, 53)
+        Me.LabelDiscVal.Location = New System.Drawing.Point(939, 53)
         Me.LabelDiscVal.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LabelDiscVal.Name = "LabelDiscVal"
         Me.LabelDiscVal.Size = New System.Drawing.Size(107, 26)
@@ -1403,7 +1427,7 @@ Partial Class TempSales
         '
         Me.txtAmount.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.txtAmount.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtAmount.Location = New System.Drawing.Point(1120, 82)
+        Me.txtAmount.Location = New System.Drawing.Point(1113, 82)
         Me.txtAmount.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtAmount.Name = "txtAmount"
         Me.txtAmount.Size = New System.Drawing.Size(207, 32)
@@ -1413,7 +1437,7 @@ Partial Class TempSales
         '
         Me.txtDiscount.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.txtDiscount.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtDiscount.Location = New System.Drawing.Point(865, 82)
+        Me.txtDiscount.Location = New System.Drawing.Point(863, 82)
         Me.txtDiscount.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtDiscount.Name = "txtDiscount"
         Me.txtDiscount.Size = New System.Drawing.Size(70, 32)
@@ -1423,10 +1447,10 @@ Partial Class TempSales
         '
         Me.txtSellingPrice1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.txtSellingPrice1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtSellingPrice1.Location = New System.Drawing.Point(667, 84)
+        Me.txtSellingPrice1.Location = New System.Drawing.Point(665, 82)
         Me.txtSellingPrice1.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.txtSellingPrice1.Name = "txtSellingPrice1"
-        Me.txtSellingPrice1.Size = New System.Drawing.Size(192, 30)
+        Me.txtSellingPrice1.Size = New System.Drawing.Size(192, 32)
         Me.txtSellingPrice1.TabIndex = 12
         Me.txtSellingPrice1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -1437,7 +1461,7 @@ Partial Class TempSales
         Me.txtItemID.Location = New System.Drawing.Point(14, 82)
         Me.txtItemID.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.txtItemID.Name = "txtItemID"
-        Me.txtItemID.Size = New System.Drawing.Size(101, 30)
+        Me.txtItemID.Size = New System.Drawing.Size(101, 32)
         Me.txtItemID.TabIndex = 10
         Me.txtItemID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -1445,10 +1469,10 @@ Partial Class TempSales
         '
         Me.txtQuantity.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.txtQuantity.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtQuantity.Location = New System.Drawing.Point(570, 84)
+        Me.txtQuantity.Location = New System.Drawing.Point(567, 82)
         Me.txtQuantity.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.txtQuantity.Name = "txtQuantity"
-        Me.txtQuantity.Size = New System.Drawing.Size(92, 30)
+        Me.txtQuantity.Size = New System.Drawing.Size(92, 32)
         Me.txtQuantity.TabIndex = 15
         Me.txtQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -1894,4 +1918,6 @@ Partial Class TempSales
     Friend WithEvents lblCusVatId As Label
     Friend WithEvents txtCusVatId As TextBox
     Friend WithEvents LabelAccountOutstandingHeader As Label
+    Friend WithEvents lblSaleDate As Label
+    Friend WithEvents dtpSaleDate As DateTimePicker
 End Class
