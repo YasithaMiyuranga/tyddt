@@ -19,6 +19,7 @@ Partial Class Home
 
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Home))
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New System.Windows.Forms.DataVisualization.Charting.Title()
@@ -26,8 +27,8 @@ Partial Class Home
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
         Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim Title2 As System.Windows.Forms.DataVisualization.Charting.Title = New System.Windows.Forms.DataVisualization.Charting.Title()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Home))
         Me.pnlHeader = New System.Windows.Forms.Panel()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.lblUserDisplay = New System.Windows.Forms.Label()
         Me.lblDashTitle = New System.Windows.Forms.Label()
         Me.flowCards = New System.Windows.Forms.FlowLayoutPanel()
@@ -59,7 +60,6 @@ Partial Class Home
         Me.dgvSupplierReturnCheques = New System.Windows.Forms.DataGridView()
         Me.headerPanel = New System.Windows.Forms.Panel()
         Me.lblCreditTitle = New System.Windows.Forms.Label()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.pnlHeader.SuspendLayout()
         Me.flowCards.SuspendLayout()
         Me.pnlSalesCard.SuspendLayout()
@@ -96,8 +96,20 @@ Partial Class Home
         Me.pnlHeader.Location = New System.Drawing.Point(0, 0)
         Me.pnlHeader.Margin = New System.Windows.Forms.Padding(6, 3, 6, 3)
         Me.pnlHeader.Name = "pnlHeader"
-        Me.pnlHeader.Size = New System.Drawing.Size(2317, 333)
+        Me.pnlHeader.Size = New System.Drawing.Size(2244, 333)
         Me.pnlHeader.TabIndex = 0
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.BackgroundImage = CType(resources.GetObject("GroupBox1.BackgroundImage"), System.Drawing.Image)
+        Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.GroupBox1.Location = New System.Drawing.Point(13, 165)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.GroupBox1.Size = New System.Drawing.Size(218, 124)
+        Me.GroupBox1.TabIndex = 91
+        Me.GroupBox1.TabStop = False
         '
         'lblUserDisplay
         '
@@ -248,9 +260,9 @@ Partial Class Home
         Me.flowCharts.Controls.Add(Me.chartStock)
         Me.flowCharts.Dock = System.Windows.Forms.DockStyle.Fill
         Me.flowCharts.Location = New System.Drawing.Point(0, 333)
-        Me.flowCharts.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.flowCharts.Margin = New System.Windows.Forms.Padding(6)
         Me.flowCharts.Name = "flowCharts"
-        Me.flowCharts.Size = New System.Drawing.Size(2317, 441)
+        Me.flowCharts.Size = New System.Drawing.Size(2244, 441)
         Me.flowCharts.TabIndex = 1
         '
         'chartSales
@@ -288,7 +300,7 @@ Partial Class Home
         Legend1.IsTextAutoFit = False
         Legend1.Name = "Legend1"
         Me.chartStock.Legends.Add(Legend1)
-        Me.chartStock.Location = New System.Drawing.Point(1428, 3)
+        Me.chartStock.Location = New System.Drawing.Point(23, 433)
         Me.chartStock.Margin = New System.Windows.Forms.Padding(23, 3, 6, 3)
         Me.chartStock.Name = "chartStock"
         Series2.ChartArea = "MainArea"
@@ -317,7 +329,7 @@ Partial Class Home
         Me.pnlCreditDetails.Location = New System.Drawing.Point(0, 774)
         Me.pnlCreditDetails.Margin = New System.Windows.Forms.Padding(6, 3, 6, 3)
         Me.pnlCreditDetails.Name = "pnlCreditDetails"
-        Me.pnlCreditDetails.Size = New System.Drawing.Size(2317, 333)
+        Me.pnlCreditDetails.Size = New System.Drawing.Size(2244, 333)
         Me.pnlCreditDetails.TabIndex = 2
         '
         'tabsManagement
@@ -334,7 +346,7 @@ Partial Class Home
         Me.tabsManagement.Margin = New System.Windows.Forms.Padding(6, 3, 6, 3)
         Me.tabsManagement.Name = "tabsManagement"
         Me.tabsManagement.SelectedIndex = 0
-        Me.tabsManagement.Size = New System.Drawing.Size(2317, 255)
+        Me.tabsManagement.Size = New System.Drawing.Size(2244, 255)
         Me.tabsManagement.TabIndex = 1
         '
         'tabPageCustomerCredits
@@ -344,7 +356,7 @@ Partial Class Home
         Me.tabPageCustomerCredits.Margin = New System.Windows.Forms.Padding(6, 3, 6, 3)
         Me.tabPageCustomerCredits.Name = "tabPageCustomerCredits"
         Me.tabPageCustomerCredits.Padding = New System.Windows.Forms.Padding(6, 3, 6, 3)
-        Me.tabPageCustomerCredits.Size = New System.Drawing.Size(2309, 211)
+        Me.tabPageCustomerCredits.Size = New System.Drawing.Size(2236, 211)
         Me.tabPageCustomerCredits.TabIndex = 0
         Me.tabPageCustomerCredits.Text = "Customer Credits (2M+)"
         Me.tabPageCustomerCredits.UseVisualStyleBackColor = True
@@ -362,7 +374,7 @@ Partial Class Home
         Me.dgvCustomerCredits.ReadOnly = True
         Me.dgvCustomerCredits.RowHeadersVisible = False
         Me.dgvCustomerCredits.RowHeadersWidth = 51
-        Me.dgvCustomerCredits.Size = New System.Drawing.Size(2297, 205)
+        Me.dgvCustomerCredits.Size = New System.Drawing.Size(2224, 205)
         Me.dgvCustomerCredits.TabIndex = 0
         '
         'tabPageBlockedCustomers
@@ -513,7 +525,7 @@ Partial Class Home
         Me.headerPanel.Location = New System.Drawing.Point(0, 0)
         Me.headerPanel.Margin = New System.Windows.Forms.Padding(6, 3, 6, 3)
         Me.headerPanel.Name = "headerPanel"
-        Me.headerPanel.Size = New System.Drawing.Size(2317, 78)
+        Me.headerPanel.Size = New System.Drawing.Size(2244, 78)
         Me.headerPanel.TabIndex = 0
         '
         'lblCreditTitle
@@ -528,24 +540,12 @@ Partial Class Home
         Me.lblCreditTitle.TabIndex = 0
         Me.lblCreditTitle.Text = "MANAGEMENT & FINANCIAL NOTIFICATIONS"
         '
-        'GroupBox1
-        '
-        Me.GroupBox1.BackgroundImage = Global.PE_System.My.Resources.Resources.S
-        Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.GroupBox1.Location = New System.Drawing.Point(13, 106)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Size = New System.Drawing.Size(226, 213)
-        Me.GroupBox1.TabIndex = 91
-        Me.GroupBox1.TabStop = False
-        '
         'Home
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(11.0!, 24.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.FromArgb(CType(CType(44, Byte), Integer), CType(CType(62, Byte), Integer), CType(CType(80, Byte), Integer))
-        Me.ClientSize = New System.Drawing.Size(2317, 1107)
+        Me.ClientSize = New System.Drawing.Size(2244, 1107)
         Me.Controls.Add(Me.flowCharts)
         Me.Controls.Add(Me.pnlHeader)
         Me.Controls.Add(Me.pnlCreditDetails)

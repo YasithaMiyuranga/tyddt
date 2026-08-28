@@ -95,6 +95,7 @@ Partial Class TempSales
         Me.lblCustomerPhone = New System.Windows.Forms.Label()
         Me.lblCustomerCode = New System.Windows.Forms.Label()
         Me.txtCustomerPhone = New System.Windows.Forms.TextBox()
+        Me.btnWhatsApp = New System.Windows.Forms.Button()
         Me.lblCreditLimit = New System.Windows.Forms.Label()
         Me.txtCreditLimit = New System.Windows.Forms.TextBox()
         Me.lblCreditPeriod = New System.Windows.Forms.Label()
@@ -951,6 +952,7 @@ Partial Class TempSales
         Me.GroupBox3.Controls.Add(Me.lblCustomerPhone)
         Me.GroupBox3.Controls.Add(Me.lblCustomerCode)
         Me.GroupBox3.Controls.Add(Me.txtCustomerPhone)
+        Me.GroupBox3.Controls.Add(Me.btnWhatsApp)
         Me.GroupBox3.Controls.Add(Me.lblCreditLimit)
         Me.GroupBox3.Controls.Add(Me.txtCreditLimit)
         Me.GroupBox3.Controls.Add(Me.lblCreditPeriod)
@@ -1123,8 +1125,21 @@ Partial Class TempSales
         Me.txtCustomerPhone.Location = New System.Drawing.Point(553, 15)
         Me.txtCustomerPhone.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtCustomerPhone.Name = "txtCustomerPhone"
-        Me.txtCustomerPhone.Size = New System.Drawing.Size(249, 28)
+        Me.txtCustomerPhone.Size = New System.Drawing.Size(215, 28)
         Me.txtCustomerPhone.TabIndex = 105
+        '
+        'btnWhatsApp
+        '
+        Me.btnWhatsApp.BackColor = System.Drawing.Color.FromArgb(CType(CType(37, Byte), Integer), CType(CType(211, Byte), Integer), CType(CType(102, Byte), Integer))
+        Me.btnWhatsApp.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnWhatsApp.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnWhatsApp.ForeColor = System.Drawing.Color.White
+        Me.btnWhatsApp.Location = New System.Drawing.Point(770, 15)
+        Me.btnWhatsApp.Name = "btnWhatsApp"
+        Me.btnWhatsApp.Size = New System.Drawing.Size(34, 28)
+        Me.btnWhatsApp.TabIndex = 999
+        Me.btnWhatsApp.Text = "WA"
+        Me.btnWhatsApp.UseVisualStyleBackColor = False
         '
         'lblCreditLimit
         '
@@ -1920,4 +1935,5 @@ Partial Class TempSales
     Friend WithEvents LabelAccountOutstandingHeader As Label
     Friend WithEvents lblSaleDate As Label
     Friend WithEvents dtpSaleDate As DateTimePicker
+    Friend WithEvents btnWhatsApp As Button
 End Class

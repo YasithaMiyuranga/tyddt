@@ -7800,5 +7800,32 @@ End If
         End If
     End Sub
 
+    Private Sub btnWhatsApp_Click(sender As Object, e As EventArgs) Handles btnWhatsApp.Click
+        Dim phoneNo As String = txtCustomerPhone.Text.Trim()
+        
+        ' Clean phone number: remove spaces, dashes, parentheses
+        phoneNo = phoneNo.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "")
+        
+        If String.IsNullOrEmpty(phoneNo) Then
+            MessageBox.Show("Please enter a valid phone number first.", "Empty Phone Number", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+        
+        ' Formulate Sri Lanka Country Code: if starts with 0, replace with 94
+        If phoneNo.StartsWith("0") Then
+            phoneNo = "94" & phoneNo.Substring(1)
+        ElseIf Not phoneNo.StartsWith("94") AndAlso phoneNo.Length = 9 Then
+            phoneNo = "94" & phoneNo
+        End If
+        
+        ' Launch WhatsApp URL directly in the Desktop App
+        Try
+            Dim waUrl As String = "whatsapp://send?phone=" & phoneNo
+            System.Diagnostics.Process.Start(New System.Diagnostics.ProcessStartInfo(waUrl) With {.UseShellExecute = True})
+        Catch ex As Exception
+            MessageBox.Show("Error opening WhatsApp: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
 End Class
 
