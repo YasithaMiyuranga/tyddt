@@ -24,6 +24,7 @@ Partial Class user
     Private Sub InitializeComponent()
         Dim lbluserid As System.Windows.Forms.Label
         Dim lblusername As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(user))
         Me.lblFinancialRole = New System.Windows.Forms.Label()
         Me.lblRole = New System.Windows.Forms.Label()
         Me.lblSecureKey = New System.Windows.Forms.Label()
@@ -118,7 +119,7 @@ Partial Class user
         Me.lblTitle.BackColor = System.Drawing.Color.Transparent
         Me.lblTitle.Font = New System.Drawing.Font("Microsoft Uighur", 36.0!, CType((System.Drawing.FontStyle.Bold Or System.Drawing.FontStyle.Italic), System.Drawing.FontStyle), System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblTitle.ForeColor = System.Drawing.Color.White
-        Me.lblTitle.Location = New System.Drawing.Point(0, 59)
+        Me.lblTitle.Location = New System.Drawing.Point(-1, 122)
         Me.lblTitle.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblTitle.Name = "lblTitle"
         Me.lblTitle.Size = New System.Drawing.Size(750, 107)
@@ -130,7 +131,7 @@ Partial Class user
         '
         Me.txtUserId.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUserId.Location = New System.Drawing.Point(218, 500)
-        Me.txtUserId.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.txtUserId.Margin = New System.Windows.Forms.Padding(6)
         Me.txtUserId.Name = "txtUserId"
         Me.txtUserId.ReadOnly = True
         Me.txtUserId.Size = New System.Drawing.Size(442, 39)
@@ -140,7 +141,7 @@ Partial Class user
         '
         Me.txtUserName.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtUserName.Location = New System.Drawing.Point(218, 572)
-        Me.txtUserName.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.txtUserName.Margin = New System.Windows.Forms.Padding(6)
         Me.txtUserName.Name = "txtUserName"
         Me.txtUserName.Size = New System.Drawing.Size(442, 39)
         Me.txtUserName.TabIndex = 5
@@ -148,7 +149,7 @@ Partial Class user
         'btnAddUser
         '
         Me.btnAddUser.Location = New System.Drawing.Point(218, 960)
-        Me.btnAddUser.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnAddUser.Margin = New System.Windows.Forms.Padding(4)
         Me.btnAddUser.Name = "btnAddUser"
         Me.btnAddUser.Size = New System.Drawing.Size(446, 66)
         Me.btnAddUser.TabIndex = 11
@@ -164,7 +165,7 @@ Partial Class user
         Me.btnCancel.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Bold)
         Me.btnCancel.ForeColor = System.Drawing.Color.Black
         Me.btnCancel.Location = New System.Drawing.Point(218, 1043)
-        Me.btnCancel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.btnCancel.Margin = New System.Windows.Forms.Padding(4)
         Me.btnCancel.Name = "btnCancel"
         Me.btnCancel.Size = New System.Drawing.Size(446, 66)
         Me.btnCancel.TabIndex = 12
@@ -177,7 +178,7 @@ Partial Class user
         Me.cmbRole.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbRole.FormattingEnabled = True
         Me.cmbRole.Location = New System.Drawing.Point(218, 644)
-        Me.cmbRole.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbRole.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbRole.Name = "cmbRole"
         Me.cmbRole.Size = New System.Drawing.Size(442, 40)
         Me.cmbRole.TabIndex = 7
@@ -188,7 +189,7 @@ Partial Class user
         Me.cmbFinancialRole.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmbFinancialRole.FormattingEnabled = True
         Me.cmbFinancialRole.Location = New System.Drawing.Point(218, 716)
-        Me.cmbFinancialRole.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.cmbFinancialRole.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbFinancialRole.Name = "cmbFinancialRole"
         Me.cmbFinancialRole.Size = New System.Drawing.Size(442, 40)
         Me.cmbFinancialRole.TabIndex = 8
@@ -197,7 +198,7 @@ Partial Class user
         '
         Me.txtSecureKey.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtSecureKey.Location = New System.Drawing.Point(218, 788)
-        Me.txtSecureKey.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.txtSecureKey.Margin = New System.Windows.Forms.Padding(6)
         Me.txtSecureKey.Name = "txtSecureKey"
         Me.txtSecureKey.Size = New System.Drawing.Size(442, 39)
         Me.txtSecureKey.TabIndex = 9
@@ -207,21 +208,21 @@ Partial Class user
         '
         Me.txtHiddenKey.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtHiddenKey.Location = New System.Drawing.Point(218, 860)
-        Me.txtHiddenKey.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.txtHiddenKey.Margin = New System.Windows.Forms.Padding(6)
         Me.txtHiddenKey.Name = "txtHiddenKey"
         Me.txtHiddenKey.Size = New System.Drawing.Size(442, 39)
         Me.txtHiddenKey.TabIndex = 10
         '
         'GroupBox1
         '
-        Me.GroupBox1.BackgroundImage = Global.PE_System.My.Resources.Resources.S
+        Me.GroupBox1.BackgroundImage = CType(resources.GetObject("GroupBox1.BackgroundImage"), System.Drawing.Image)
         Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.GroupBox1.Location = New System.Drawing.Point(272, 195)
+        Me.GroupBox1.Location = New System.Drawing.Point(269, 316)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Size = New System.Drawing.Size(270, 249)
-        Me.GroupBox1.TabIndex = 91
+        Me.GroupBox1.Size = New System.Drawing.Size(261, 152)
+        Me.GroupBox1.TabIndex = 92
         Me.GroupBox1.TabStop = False
         '
         'user
@@ -246,7 +247,7 @@ Partial Class user
         Me.Controls.Add(Me.txtUserName)
         Me.Controls.Add(Me.txtUserId)
         Me.Controls.Add(Me.lblTitle)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "user"
         Me.Text = "Create User"
         Me.ResumeLayout(False)
