@@ -415,12 +415,28 @@ Public Class TempSales
 
     Private Sub TempSales_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
-            ' Ensure draft_user column exists for user-specific recovery
             Dim sqlDraftUser As String = "ALTER TABLE temp_bill_items ADD COLUMN draft_user VARCHAR(100) NULL"
             Using cmdDraft As New MySqlCommand(sqlDraftUser, conn)
                 Try
                     If conn.State = ConnectionState.Closed Then conn.Open()
                     cmdDraft.ExecuteNonQuery()
+                Catch : End Try
+            End Using
+
+            ' Ensure complete_date column exists in billing and quotation_billing
+            Dim sqlBillingCol As String = "ALTER TABLE billing ADD COLUMN complete_date DATETIME NULL"
+            Using cmdCol1 As New MySqlCommand(sqlBillingCol, conn)
+                Try
+                    If conn.State = ConnectionState.Closed Then conn.Open()
+                    cmdCol1.ExecuteNonQuery()
+                Catch : End Try
+            End Using
+
+            Dim sqlQuoteCol As String = "ALTER TABLE quotation_billing ADD COLUMN complete_date DATETIME NULL"
+            Using cmdCol2 As New MySqlCommand(sqlQuoteCol, conn)
+                Try
+                    If conn.State = ConnectionState.Closed Then conn.Open()
+                    cmdCol2.ExecuteNonQuery()
                 Catch : End Try
             End Using
 
@@ -2917,14 +2933,15 @@ Public Class TempSales
                                     End If
                                 Else
                                     If isQuote Then
-                                        mainSql = "INSERT INTO " & mainTable & " (inv_no, payment_type, inv_type, billing_type, status, subtotal, grand_total, customer_id, timestamps, vat_id, our_discount, inv_discount, advance_payment, balance_due, paid_amount, cash_received, change_amount, user_id, is_rgr, printed_inv_no, cus_vat_id, print_as_retail) VALUES (@inv_no, @p_type, @i_type, @b_type, @status, @subtotal, @grand_total, @c_id, @now_local, @v_id, @our_discount, @inv_discount, @advance, @balance, @paid, @received, @change, @u_id, @is_rgr, @printed, @cus_vat_id, @print_retail)"
+                                        mainSql = "INSERT INTO " & mainTable & " (inv_no, payment_type, inv_type, billing_type, status, subtotal, grand_total, customer_id, timestamps, complete_date, vat_id, our_discount, inv_discount, advance_payment, balance_due, paid_amount, cash_received, change_amount, user_id, is_rgr, printed_inv_no, cus_vat_id, print_as_retail) VALUES (@inv_no, @p_type, @i_type, @b_type, @status, @subtotal, @grand_total, @c_id, @now_local, @complete_date, @v_id, @our_discount, @inv_discount, @advance, @balance, @paid, @received, @change, @u_id, @is_rgr, @printed, @cus_vat_id, @print_retail)"
                                     Else
-                                        mainSql = "INSERT INTO " & mainTable & " (inv_no, payment_type, inv_type, billing_type, status, subtotal, grand_total, customer_id, timestamps, vat_id, our_discount, inv_discount, advance_payment, balance_due, paid_amount, cash_received, change_amount, user_id, cheque_no, bank_id, po_number, cheque_balance_due, credit_balance_due, partial_cash, cash_status, order_user_id, collector_user_id, balance_action, balance_amount, wallet_used, wallet_balance_after, is_rgr, printed_inv_no, adv_pay_amount, cus_vat_id, print_as_retail) VALUES (@inv_no, @p_type, @i_type, @b_type, @status, @subtotal, @grand_total, @c_id, @now_local, @v_id, @our_discount, @inv_discount, @advance, @balance, @paid, @received, @change, @u_id, @cheque_no, @bank_id, @po, @chq_bal, @crd_bal, @p_cash, @c_status, @o_uid, @coll_uid, @bal_action, @bal_amt, @w_used, @w_bal_after, @is_rgr, @printed, @adv_pay_amount, @cus_vat_id, @print_retail)"
+                                        mainSql = "INSERT INTO " & mainTable & " (inv_no, payment_type, inv_type, billing_type, status, subtotal, grand_total, customer_id, timestamps, complete_date, vat_id, our_discount, inv_discount, advance_payment, balance_due, paid_amount, cash_received, change_amount, user_id, cheque_no, bank_id, po_number, cheque_balance_due, credit_balance_due, partial_cash, cash_status, order_user_id, collector_user_id, balance_action, balance_amount, wallet_used, wallet_balance_after, is_rgr, printed_inv_no, adv_pay_amount, cus_vat_id, print_as_retail) VALUES (@inv_no, @p_type, @i_type, @b_type, @status, @subtotal, @grand_total, @c_id, @now_local, @complete_date, @v_id, @our_discount, @inv_discount, @advance, @balance, @paid, @received, @change, @u_id, @cheque_no, @bank_id, @po, @chq_bal, @crd_bal, @p_cash, @c_status, @o_uid, @coll_uid, @bal_action, @bal_amt, @w_used, @w_bal_after, @is_rgr, @printed, @adv_pay_amount, @cus_vat_id, @print_retail)"
                                     End If
                                 End If
 
                                 Using cmdMain As New MySqlCommand(mainSql, conn, dbTrans)
                                     cmdMain.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
+                                    cmdMain.Parameters.AddWithValue("@complete_date", DateTime.Now)
                                     If isUpdate Then
                                         cmdMain.Parameters.AddWithValue("@id", billingId)
                                         cmdMain.Parameters.AddWithValue("@c_id", If(String.IsNullOrEmpty(selectedCustomerId), DBNull.Value, selectedCustomerId))
@@ -6017,7 +6034,7 @@ Public Class TempSales
                 filterSql &= " AND t.status LIKE @filterStatus"
             End If
             If useDate Then
-                filterSql &= " AND (DATE(t.timestamps) = @filterDate OR DATE(t.updated_at) = @filterDate)"
+                filterSql &= " AND (DATE(IFNULL(t.complete_date, t.timestamps)) = @filterDate)"
             End If
 
             Dim custFilter As String = ""
@@ -6038,9 +6055,9 @@ Public Class TempSales
                 End If
             End If
 
-            Dim selectCols As String = "SELECT t.id, t.inv_no as 'Invoice No', t.printed_inv_no as 'Printed No', t.billing_type as 'B.Type', t.inv_type as 'Inv Type', t.payment_type as 'Payment', t.status as 'Status', t.grand_total as 'Total', t.advance_payment as 'Advance', t.paid_amount as 'Paid', t.balance_due as 'Balance', t.timestamps as 'Date'"
+            Dim selectCols As String = "SELECT t.id, t.printed_inv_no as 'Printed No', t.billing_type as 'B.Type', t.inv_type as 'Inv Type', t.payment_type as 'Payment', t.status as 'Status', t.grand_total as 'Total', t.advance_payment as 'Advance', t.paid_amount as 'Paid', t.balance_due as 'Balance', t.timestamps as 'Date', t.complete_date as 'Complete Date'"
 
-            Dim innerCols As String = "SELECT id, inv_no, printed_inv_no, billing_type, inv_type, payment_type, status, grand_total, advance_payment, paid_amount, balance_due, timestamps, customer_id, is_rgr, updated_at"
+            Dim innerCols As String = "SELECT id, inv_no, printed_inv_no, billing_type, inv_type, payment_type, status, grand_total, advance_payment, paid_amount, balance_due, timestamps, customer_id, is_rgr, updated_at, complete_date"
             Dim combinedTable As String = "( " & innerCols & " FROM billing UNION ALL " & innerCols & " FROM quotation_billing ) as t"
 
             Dim localSql = selectCols & " FROM " & combinedTable & " LEFT JOIN customer c ON t.customer_id = c.id WHERE 1=1" & filterSql & custFilter & rgrFilter & " ORDER BY t.timestamps DESC"
@@ -6069,12 +6086,7 @@ Public Class TempSales
 
                  If dgvInvoices.Columns.Contains("id") Then
                     dgvInvoices.Columns("id").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-                    dgvInvoices.Columns("id").Width = 80
-                End If
-
-                If dgvInvoices.Columns.Contains("Invoice No") Then
-                    dgvInvoices.Columns("Invoice No").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-                    dgvInvoices.Columns("Invoice No").Width = 100
+                    dgvInvoices.Columns("id").Width = 60
                 End If
 
                 If dgvInvoices.Columns.Contains("Printed No") Then
@@ -6130,6 +6142,11 @@ Public Class TempSales
                 If dgvInvoices.Columns.Contains("Date") Then
                     dgvInvoices.Columns("Date").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
                     dgvInvoices.Columns("Date").Width = 160
+                End If
+
+                If dgvInvoices.Columns.Contains("Complete Date") Then
+                    dgvInvoices.Columns("Complete Date").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                    dgvInvoices.Columns("Complete Date").Width = 140
                 End If
 
             End Using
@@ -6237,7 +6254,7 @@ Public Class TempSales
             End If
 
             ' Load the invoice items directly from the consolidated billing tables or quotation
-            LoadInvoiceItemsIntoGrid(bilId, row.Cells("Invoice No").Value.ToString(), srcTable)
+            LoadInvoiceItemsIntoGrid(bilId, row.Cells("Printed No").Value.ToString(), srcTable)
             InvDetailsPanel.Visible = False
 
             ' Check eligibility for Mark as Complete
@@ -6273,7 +6290,7 @@ Public Class TempSales
         End If
 
         Dim invId As String = dgvInvoices.CurrentRow.Cells("id").Value.ToString()
-        Dim invNo As String = dgvInvoices.CurrentRow.Cells("Invoice No").Value.ToString()
+        Dim invNo As String = dgvInvoices.CurrentRow.Cells("Printed No").Value.ToString()
         Dim currentStatus As String = dgvInvoices.CurrentRow.Cells("Status").Value.ToString()
 
         If String.Equals(currentStatus, "completed", StringComparison.OrdinalIgnoreCase) Then
