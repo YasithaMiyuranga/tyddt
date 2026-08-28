@@ -405,7 +405,7 @@ Public Class credit
             Dim query As String = "SELECT c.name AS CusName, cc.amount AS Credit_Amount, cc.timestamps AS CreditDate, cc.inv_no " &
                           "FROM customer_credit cc " &
                           "INNER JOIN customer c ON cc.customer_id = c.id " &
-                          "WHERE cc.is_active = 1 AND cc.timestamps BETWEEN @start AND @end " & rgrFilter & " " &
+                          "WHERE cc.is_active = 1 AND IFNULL(cc.complete_date, cc.timestamps) BETWEEN @start AND @end " & rgrFilter & " " &
                           "ORDER BY c.name ASC"
 
             Dim adapter As New MySqlDataAdapter(query, conn)
@@ -464,7 +464,7 @@ Public Class credit
     Private Sub Credit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.KeyPreview = True
         StartDate.Value = DateTime.Now
-        EndDate.Value = DateTime.Now.AddDays(1)
+        EndDate.Value = DateTime.Now
         dtpDetailsStart.Value = DateTime.Now
         dtpDetailsEnd.Value = DateTime.Now.AddDays(1)
         Customer_creditDataGridView1.ReadOnly = True
@@ -2209,7 +2209,7 @@ Public Class credit
         DCustomerInvTxt.Clear()
         creid = 0 ' Reset ID so we know it's a new entry
         selectedCustomerId = 0
-        DateTimePicker4.Value = DateTime.Now
+        DateTimePicker3.Value = DateTime.Now
         Panel3.Visible = False
         DCustomerNameTxt.Select()
         
@@ -2224,7 +2224,7 @@ Public Class credit
             Return
         End If
 
-        Dim creditDate As String = Format(Me.DateTimePicker4.Value, "yyyy-MM-dd HH:mm:ss")
+        Dim creditDate As String = Format(Me.DateTimePicker3.Value, "yyyy-MM-dd HH:mm:ss")
         Dim transaction As MySqlTransaction = Nothing
 
         Try

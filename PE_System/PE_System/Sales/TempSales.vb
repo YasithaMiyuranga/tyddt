@@ -1,3 +1,4 @@
+
 Imports MySql.Data.MySqlClient
 Imports System.Text
 
@@ -437,6 +438,15 @@ Public Class TempSales
                 Try
                     If conn.State = ConnectionState.Closed Then conn.Open()
                     cmdCol2.ExecuteNonQuery()
+                Catch : End Try
+            End Using
+
+            ' Ensure complete_date column exists in customer_credit
+            Dim sqlCreditCol As String = "ALTER TABLE customer_credit ADD COLUMN complete_date DATETIME NULL"
+            Using cmdCol3 As New MySqlCommand(sqlCreditCol, conn)
+                Try
+                    If conn.State = ConnectionState.Closed Then conn.Open()
+                    cmdCol3.ExecuteNonQuery()
                 Catch : End Try
             End Using
 
@@ -2927,9 +2937,9 @@ Public Class TempSales
                                 Dim mainSql As String
                                 If isUpdate Then
                                     If isQuote Then
-                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, timestamps=@now_local, updated_at=@now_local, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
+                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, timestamps=@now_local, complete_date=@complete_date, updated_at=@now_local, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
                                     Else
-                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, cheque_no=@cheque_no, bank_id=@bank_id, po_number=@po, cheque_balance_due=@chq_bal, credit_balance_due=@crd_bal, partial_cash=@p_cash, timestamps=@now_local, updated_at=@now_local, cash_status=@c_status, order_user_id=@o_uid, collector_user_id=@coll_uid, change_action=@bal_action, adv_pay_amount=@adv_pay_amount, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
+                                        mainSql = "UPDATE " & mainTable & " SET payment_type=@p_type, inv_type=@i_type, billing_type=@b_type, status=@status, subtotal=@subtotal, grand_total=@grand_total, vat_id=@v_id, our_discount=@our_discount, inv_discount=@inv_discount, advance_payment=@advance, balance_due=@balance, paid_amount=@paid, cash_received=@received, change_amount=@change, user_id=@u_id, customer_id=@c_id, cheque_no=@cheque_no, bank_id=@bank_id, po_number=@po, cheque_balance_due=@chq_bal, credit_balance_due=@crd_bal, partial_cash=@p_cash, timestamps=@now_local, complete_date=@complete_date, updated_at=@now_local, cash_status=@c_status, order_user_id=@o_uid, collector_user_id=@coll_uid, change_action=@bal_action, adv_pay_amount=@adv_pay_amount, cus_vat_id=@cus_vat_id, print_as_retail=@print_retail WHERE id=@id"
                                     End If
                                 Else
                                     If isQuote Then
@@ -2940,8 +2950,8 @@ Public Class TempSales
                                 End If
 
                                 Using cmdMain As New MySqlCommand(mainSql, conn, dbTrans)
-                                    cmdMain.Parameters.AddWithValue("@now_local", dtpSaleDate.Value)
-                                    cmdMain.Parameters.AddWithValue("@complete_date", DateTime.Now)
+                                    cmdMain.Parameters.AddWithValue("@now_local", DateTime.Now)
+                                    cmdMain.Parameters.AddWithValue("@complete_date", dtpSaleDate.Value)
                                     If isUpdate Then
                                         cmdMain.Parameters.AddWithValue("@id", billingId)
                                         cmdMain.Parameters.AddWithValue("@c_id", If(String.IsNullOrEmpty(selectedCustomerId), DBNull.Value, selectedCustomerId))
@@ -3135,11 +3145,11 @@ Public Class TempSales
                                         If creditBalanceDue > 0 Then
                                             If existingCreditId > 0 Then
                                                 ' Update existing record — save selected/edited sale date to customer_credit timestamps too
-                                                syncSql = "UPDATE customer_credit SET amount = @amt, timestamps = @now, is_active = 1 WHERE id = @id"
+                                                syncSql = "UPDATE customer_credit SET amount = @amt, timestamps = @now, complete_date = @complete_date, is_active = 1 WHERE id = @id"
                                             Else
                                                 ' Insert new record — only for truly new invoices
                                                 If Not isUpdate Then
-                                                    syncSql = "INSERT INTO customer_credit (amount, customer_id, inv_no, timestamps, is_active, is_rgr) VALUES (@amt, @cid, @inv, @now, 1, @is_rgr)"
+                                                    syncSql = "INSERT INTO customer_credit (amount, customer_id, inv_no, timestamps, complete_date, is_active, is_rgr) VALUES (@amt, @cid, @inv, @now, @complete_date, 1, @is_rgr)"
                                                 End If
                                             End If
                                         Else
@@ -3155,6 +3165,7 @@ Public Class TempSales
                                                 cmdSync.Parameters.AddWithValue("@cid", selectedCustomerId)
                                                 cmdSync.Parameters.AddWithValue("@inv", creditInvNo)
                                                 cmdSync.Parameters.AddWithValue("@now", dtpSaleDate.Value)
+                                                cmdSync.Parameters.AddWithValue("@complete_date", DateTime.Now)
                                                 cmdSync.Parameters.AddWithValue("@id", existingCreditId)
                                                 cmdSync.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                                 cmdSync.ExecuteNonQuery()
@@ -3342,12 +3353,12 @@ Public Class TempSales
                                     If Module1.IsRgrModeActive AndAlso Not String.IsNullOrEmpty(printedInvNo) Then
                                         creditInvNo = printedInvNo
                                     End If
-                                    Dim updateCreditSql As String =
-                                        "UPDATE customer_credit SET amount = @newAmt, timestamps = @now WHERE inv_no = @inv"
+                                    Dim updateCreditSql As String = "UPDATE customer_credit SET amount = @newAmt, timestamps = @now, complete_date = @complete_date WHERE inv_no = @inv"
                                     Using cmdUpdateCredit As New MySqlCommand(updateCreditSql, conn, dbTrans)
                                         cmdUpdateCredit.Parameters.AddWithValue("@newAmt", creditBalanceDue)
                                         cmdUpdateCredit.Parameters.AddWithValue("@inv", creditInvNo)
                                         cmdUpdateCredit.Parameters.AddWithValue("@now", dtpSaleDate.Value)
+                                        cmdUpdateCredit.Parameters.AddWithValue("@complete_date", DateTime.Now)
                                         cmdUpdateCredit.ExecuteNonQuery()
                                     End Using
                                 End If
@@ -6055,7 +6066,7 @@ Public Class TempSales
                 End If
             End If
 
-            Dim selectCols As String = "SELECT t.id, t.printed_inv_no as 'Printed No', t.billing_type as 'B.Type', t.inv_type as 'Inv Type', t.payment_type as 'Payment', t.status as 'Status', t.grand_total as 'Total', t.advance_payment as 'Advance', t.paid_amount as 'Paid', t.balance_due as 'Balance', t.timestamps as 'Date', t.complete_date as 'Complete Date'"
+            Dim selectCols As String = "SELECT t.id, t.printed_inv_no as 'Invoice', t.billing_type as 'B.Type', t.inv_type as 'Inv Type', t.payment_type as 'Payment', t.status as 'Status', t.grand_total as 'Total', t.advance_payment as 'Advance', t.paid_amount as 'Paid', t.balance_due as 'Balance', t.timestamps as 'Date', DATE(t.complete_date) as 'Complete Date'"
 
             Dim innerCols As String = "SELECT id, inv_no, printed_inv_no, billing_type, inv_type, payment_type, status, grand_total, advance_payment, paid_amount, balance_due, timestamps, customer_id, is_rgr, updated_at, complete_date"
             Dim combinedTable As String = "( " & innerCols & " FROM billing UNION ALL " & innerCols & " FROM quotation_billing ) as t"
@@ -6089,9 +6100,9 @@ Public Class TempSales
                     dgvInvoices.Columns("id").Width = 60
                 End If
 
-                If dgvInvoices.Columns.Contains("Printed No") Then
-                    dgvInvoices.Columns("Printed No").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
-                    dgvInvoices.Columns("Printed No").Width = 100
+                If dgvInvoices.Columns.Contains("Invoice") Then
+                    dgvInvoices.Columns("Invoice").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                    dgvInvoices.Columns("Invoice").Width = 100
                 End If
 
                 If dgvInvoices.Columns.Contains("Customer Name") Then
@@ -6254,7 +6265,7 @@ Public Class TempSales
             End If
 
             ' Load the invoice items directly from the consolidated billing tables or quotation
-            LoadInvoiceItemsIntoGrid(bilId, row.Cells("Printed No").Value.ToString(), srcTable)
+            LoadInvoiceItemsIntoGrid(bilId, row.Cells("Invoice").Value.ToString(), srcTable)
             InvDetailsPanel.Visible = False
 
             ' Check eligibility for Mark as Complete
@@ -6290,7 +6301,7 @@ Public Class TempSales
         End If
 
         Dim invId As String = dgvInvoices.CurrentRow.Cells("id").Value.ToString()
-        Dim invNo As String = dgvInvoices.CurrentRow.Cells("Printed No").Value.ToString()
+        Dim invNo As String = dgvInvoices.CurrentRow.Cells("Invoice").Value.ToString()
         Dim currentStatus As String = dgvInvoices.CurrentRow.Cells("Status").Value.ToString()
 
         If String.Equals(currentStatus, "completed", StringComparison.OrdinalIgnoreCase) Then
