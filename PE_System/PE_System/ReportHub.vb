@@ -224,6 +224,8 @@ Public Class ReportHub
             RepositionButtons(pnlInvoiceCard)
             RepositionButtons(pnlDailyCard)
 
+            pnlSalesCard.Visible = False
+            pnlStockCard.Visible = False
             CenterCard()
         End If
     End Sub
