@@ -216,6 +216,19 @@ Public Class ReportHub
             pnlInvoiceCard.Height = 500
             pnlDailyCard.Height = 500
 
+            ' Force hide Daily Transactions card and specific buttons requested by the user
+            pnlDailyCard.Visible = False
+
+            btnCustomerCheque.Visible = False
+            btnCustomerList.Visible = False
+            btnCustomerCreditByCity.Visible = False
+            btnFullChequeReport.Visible = False
+
+            btnSupplierList.Visible = False
+            btnSupplierCheque.Visible = False
+            btnPurchaseRequest.Visible = False
+            btnFullDebitReport.Visible = False
+
             ' Reposition inside each panel properly
             RepositionButtons(pnlSalesCard)
             RepositionButtons(pnlStockCard)

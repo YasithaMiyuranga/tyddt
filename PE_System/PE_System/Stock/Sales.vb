@@ -1300,7 +1300,6 @@ Public Class frmSales
             ' Hide Daily Sales, Monthly Sales, and Cash Flow tabs by removing them
             If TabControl1.TabPages.Contains(TabPage1) Then TabControl1.TabPages.Remove(TabPage1)
             If TabControl1.TabPages.Contains(TabPage2) Then TabControl1.TabPages.Remove(TabPage2)
-            If TabControl1.TabPages.Contains(TabPage4) Then TabControl1.TabPages.Remove(TabPage4)
 
             ' Hide the entire summary panel (prices, profits, cost, balance, paid amounts)
             GroupBoxItemSummary.Visible = False
@@ -1308,10 +1307,9 @@ Public Class frmSales
             ' Hide Print button to prevent generating reports containing cost/profit details
             Button2.Visible = False
         Else
-            ' Owner has full access: restore all tabs if they are missing
+            ' Owner has full access: restore all tabs if they are missing (except the hidden ones)
             If Not TabControl1.TabPages.Contains(TabPage1) Then TabControl1.TabPages.Insert(0, TabPage1)
             If Not TabControl1.TabPages.Contains(TabPage2) Then TabControl1.TabPages.Insert(1, TabPage2)
-            If Not TabControl1.TabPages.Contains(TabPage4) Then TabControl1.TabPages.Add(TabPage4)
 
             ' Show the summary panel
             GroupBoxItemSummary.Visible = True
@@ -1319,6 +1317,10 @@ Public Class frmSales
             ' Show Print button
             Button2.Visible = True
         End If
+
+        ' Force hide Monthly item sales and Cash Flow Tracking tabs for all roles
+        If TabControl1.TabPages.Contains(TabPage3) Then TabControl1.TabPages.Remove(TabPage3)
+        If TabControl1.TabPages.Contains(TabPage4) Then TabControl1.TabPages.Remove(TabPage4)
 
         RefreshCurrentTab()
     End Sub
