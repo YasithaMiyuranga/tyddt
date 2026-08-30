@@ -227,7 +227,8 @@ Public Class ReportHub
             btnSupplierList.Visible = False
             btnSupplierCheque.Visible = False
             btnPurchaseRequest.Visible = False
-            btnFullDebitReport.Visible = False
+            btnCashSalesCashOnly.Visible = False
+            btnCashSalesOnline.Visible = False
 
             ' Reposition inside each panel properly
             RepositionButtons(pnlSalesCard)
