@@ -498,11 +498,23 @@ Partial Class Start
             ' --- MDI Background Image Support ---
             For Each ctl As Control In Me.Controls
                 If TypeOf ctl Is MdiClient Then
-                    ' Apply the form's BackgroundImage to the MdiClient area
                     ctl.BackColor = Me.BackColor
-                    ctl.BackgroundImage = Me.BackgroundImage
-                    ' Use Zoom to maintain aspect ratio and prevent the "distorted" look
-                    ctl.BackgroundImageLayout = ImageLayout.Zoom
+                    
+                    ' Enable Double Buffering to reduce flicker
+                    Try
+                        Dim t As Type = GetType(Control)
+                        Dim flags As System.Reflection.BindingFlags = System.Reflection.BindingFlags.NonPublic Or System.Reflection.BindingFlags.Instance
+                        Dim mi As System.Reflection.MethodInfo = t.GetMethod("SetStyle", flags)
+                        If mi IsNot Nothing Then
+                            mi.Invoke(ctl, New Object() {ControlStyles.AllPaintingInWmPaint Or ControlStyles.OptimizedDoubleBuffer Or ControlStyles.UserPaint, True})
+                        End If
+                    Catch ex As Exception
+                        ' Fail silently if reflection fails
+                    End Try
+
+                    ' Attach Paint and SizeChanged events to handle scaling and prevent tiling
+                    AddHandler ctl.Paint, AddressOf MdiClient_Paint
+                    AddHandler ctl.SizeChanged, AddressOf MdiClient_Resize
                     Exit For
                 End If
             Next
@@ -525,6 +537,39 @@ Partial Class Start
         Catch ex As Exception
             Console.WriteLine("Start_Load Error: " & ex.Message)
         End Try
+    End Sub
+
+    Private Sub MdiClient_Paint(sender As Object, e As PaintEventArgs)
+        Dim mdiClient As MdiClient = DirectCast(sender, MdiClient)
+        Dim img As Image = Me.BackgroundImage
+        
+        ' Clear background with default control color first to clean up old states
+        e.Graphics.Clear(Me.BackColor)
+        
+        If img IsNot Nothing Then
+            Dim w As Double = img.Width
+            Dim h As Double = img.Height
+            Dim cw As Double = mdiClient.ClientRectangle.Width
+            Dim ch As Double = mdiClient.ClientRectangle.Height
+            
+            Dim ratioX As Double = cw / w
+            Dim ratioY As Double = ch / h
+            Dim ratio As Double = Math.Min(ratioX, ratioY)
+            
+            Dim newWidth As Integer = Convert.ToInt32(w * ratio)
+            Dim newHeight As Integer = Convert.ToInt32(h * ratio)
+            
+            Dim posX As Integer = Convert.ToInt32((cw - newWidth) / 2)
+            Dim posY As Integer = Convert.ToInt32((ch - newHeight) / 2)
+            
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic
+            e.Graphics.DrawImage(img, posX, posY, newWidth, newHeight)
+        End If
+    End Sub
+
+    Private Sub MdiClient_Resize(sender As Object, e As EventArgs)
+        Dim mdiClient As MdiClient = DirectCast(sender, MdiClient)
+        mdiClient.Invalidate()
     End Sub
 
     Private Sub Start_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
