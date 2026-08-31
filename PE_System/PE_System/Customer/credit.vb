@@ -283,6 +283,26 @@ Public Class credit
             ' Explicitly enable scrollbars
             dgv.ScrollBars = ScrollBars.Both
 
+            ' Highlight fully paid items in Customer Details Grid (DataGridView1)
+            If dgv.Name = "DataGridView1" Then
+                For Each row As DataGridViewRow In dgv.Rows
+                    If row.Cells.Cast(Of DataGridViewCell)().Any(Function(c) c.OwningColumn.Name = "Credit_Amount") Then
+                        Dim amtVal As Decimal = 0
+                        If row.Cells("Credit_Amount").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("Credit_Amount").Value) Then
+                            Decimal.TryParse(row.Cells("Credit_Amount").Value.ToString(), amtVal)
+                        End If
+
+                        If amtVal = 0 Then
+                            row.DefaultCellStyle.BackColor = Color.FromArgb(220, 245, 220) ' Soft green for fully paid
+                            row.DefaultCellStyle.ForeColor = Color.Black
+                        Else
+                            row.DefaultCellStyle.BackColor = Color.White ' Default
+                            row.DefaultCellStyle.ForeColor = Color.Black
+                        End If
+                    End If
+                Next
+            End If
+
             ' Re-enable fill mode
             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
 
@@ -2176,7 +2196,7 @@ Public Class credit
             If conn.State = ConnectionState.Open Then conn.Close()
             conn.Open()
 
-            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, cc.timestamps AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no, b.po_number AS Description " &
+            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, IFNULL(cc.complete_date, cc.timestamps) AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no, b.po_number AS Description " &
                             "FROM customer_credit cc " &
                             "INNER JOIN customer c ON cc.customer_id = c.id " &
                             "LEFT JOIN billing b ON (cc.inv_no = b.inv_no OR (b.printed_inv_no Is Not Null AND cc.inv_no = b.printed_inv_no)) " &
@@ -2241,7 +2261,7 @@ Public Class credit
 
             ' Status filter via cmbCreditFilter1
             If cmbCreditFilter1.Text = "Pending" Then
-                filterStrings.Add("Credit_Amount > 0")
+                filterStrings.Add("Credit_Amount >= 0")
             ElseIf cmbCreditFilter1.Text = "Paid" Then
                 filterStrings.Add("Credit_Amount = 0")
             End If

@@ -1116,6 +1116,34 @@ Public Class SaleInv
                 If reportTypeIndex = 0 OrElse reportTypeIndex = 1 Then
                     Dim suppressCredit As Boolean = (fullCreditVal <= 0) OrElse isSpecialCus
 
+                    ' For Standard Invoice (reportTypeIndex = 1), we ONLY suppress the credit label/value.
+                    ' We do NOT shift other objects or resize Section1 to avoid layout misalignment and overlaps.
+                    If reportTypeIndex = 1 Then
+                        Dim rcdPropSec1 = rpt.GetType().GetProperty("ReportClientDocument")
+                        If rcdPropSec1 IsNot Nothing Then
+                            Dim rcd As Object = rcdPropSec1.GetValue(rpt, Nothing)
+                            If rcd IsNot Nothing Then
+                                Dim objs As Object = rcd.ReportDefController.ReportObjectController.GetAllReportObjects()
+                                For Each oldObj As Object In objs
+                                    Dim objName As String = oldObj.Name.ToString()
+                                    If String.Equals(objName, "Text26", StringComparison.OrdinalIgnoreCase) OrElse _
+                                       String.Equals(objName, "fullcredit1", StringComparison.OrdinalIgnoreCase) Then
+                                        Dim newObj As Object = oldObj.Clone(True)
+                                        newObj.Format.ConditionFormulas.RemoveAll()
+                                        newObj.Format.EnableSuppress = suppressCredit
+                                        If suppressCredit Then
+                                            newObj.Height = 0
+                                        Else
+                                            newObj.Height = 221
+                                        End If
+                                        rcd.ReportDefController.ReportObjectController.Modify(oldObj, newObj)
+                                    End If
+                                Next
+                            End If
+                        End If
+                        Exit Try
+                    End If
+
                     ' Section1 heights: POS=3071/2831, Standard=2040/1800
                     Dim originalSec1Height As Integer = If(reportTypeIndex = 0, 3071, 2040)
                     Dim suppressedSec1Height As Integer = If(reportTypeIndex = 0, 2831, 1800)

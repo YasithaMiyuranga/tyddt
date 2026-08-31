@@ -2391,8 +2391,11 @@ Public Class TempSales
                                 Dim pMethod As String = If(String.IsNullOrWhiteSpace(txtPaymentMethod.Text), "Cash", txtPaymentMethod.Text).Trim()
 
                                 ' Auto-switch to Cash if the cash amount covers the entire bill
-                                ' (BUT: Preserve PENDING if specifically chosen or forced by return logic)
-                                If cashAmt >= gTotal AndAlso gTotal > 0 AndAlso Not String.Equals(bType, "PENDING", StringComparison.OrdinalIgnoreCase) Then
+                                ' (BUT: Preserve PENDING, CREDIT, or CHEQUE if specifically chosen or forced by return logic)
+                                If cashAmt >= gTotal AndAlso gTotal > 0 AndAlso
+                                   Not String.Equals(bType, "PENDING", StringComparison.OrdinalIgnoreCase) AndAlso
+                                   Not String.Equals(bType, "Credit", StringComparison.OrdinalIgnoreCase) AndAlso
+                                   Not String.Equals(bType, "Cheque", StringComparison.OrdinalIgnoreCase) Then
                                     bType = "Cash"
                                 End If
 
@@ -2537,7 +2540,7 @@ Public Class TempSales
                                             End If
                                         End If
                                     Else
-                                        statusValue = "Paid"
+                                        statusValue = "cash_Credit"
                                     End If
                                 ElseIf String.Equals(bType, "Cheque", StringComparison.OrdinalIgnoreCase) Then
                                     If remainingBalance <= 0 Then
@@ -3039,7 +3042,7 @@ Public Class TempSales
                                             End If
                                         End Using
 
-                                        If creditBalanceDue > 0 Then
+                                        If creditBalanceDue > 0 OrElse String.Equals(bType, "Credit", StringComparison.OrdinalIgnoreCase) Then
                                             If existingCreditId > 0 Then
                                                 ' Update existing record — save selected/edited sale date to customer_credit timestamps too
                                                 syncSql = "UPDATE customer_credit SET amount = @amt, timestamps = @now, complete_date = @complete_date, is_active = 1 WHERE id = @id"
@@ -3061,8 +3064,8 @@ Public Class TempSales
                                                 cmdSync.Parameters.AddWithValue("@amt", creditBalanceDue)
                                                 cmdSync.Parameters.AddWithValue("@cid", selectedCustomerId)
                                                 cmdSync.Parameters.AddWithValue("@inv", creditInvNo)
-                                                cmdSync.Parameters.AddWithValue("@now", dtpSaleDate.Value)
-                                                cmdSync.Parameters.AddWithValue("@complete_date", DateTime.Now)
+                                                cmdSync.Parameters.AddWithValue("@now", DateTime.Now)
+                                                cmdSync.Parameters.AddWithValue("@complete_date", dtpSaleDate.Value)
                                                 cmdSync.Parameters.AddWithValue("@id", existingCreditId)
                                                 cmdSync.Parameters.AddWithValue("@is_rgr", If(Module1.IsRgrModeActive, 1, 0))
                                                 cmdSync.ExecuteNonQuery()
