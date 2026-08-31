@@ -24,13 +24,13 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.btnClear = New System.Windows.Forms.Button()
         Me.btnLogin = New System.Windows.Forms.Button()
         Me.TextBox3 = New System.Windows.Forms.TextBox()
         Me.lblPassword = New System.Windows.Forms.Label()
         Me.lblUsername = New System.Windows.Forms.Label()
         Me.TextBox4 = New System.Windows.Forms.TextBox()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -50,6 +50,18 @@ Partial Class Form1
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(759, 398)
         Me.Panel2.TabIndex = 87
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.BackgroundImage = CType(resources.GetObject("GroupBox1.BackgroundImage"), System.Drawing.Image)
+        Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.GroupBox1.Location = New System.Drawing.Point(344, 18)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.GroupBox1.Size = New System.Drawing.Size(218, 124)
+        Me.GroupBox1.TabIndex = 92
+        Me.GroupBox1.TabStop = False
         '
         'btnClear
         '
@@ -127,18 +139,6 @@ Partial Class Form1
         Me.TextBox4.Name = "TextBox4"
         Me.TextBox4.Size = New System.Drawing.Size(455, 42)
         Me.TextBox4.TabIndex = 28
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.BackgroundImage = CType(resources.GetObject("GroupBox1.BackgroundImage"), System.Drawing.Image)
-        Me.GroupBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.GroupBox1.Location = New System.Drawing.Point(344, 18)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 3, 4, 3)
-        Me.GroupBox1.Size = New System.Drawing.Size(218, 124)
-        Me.GroupBox1.TabIndex = 92
-        Me.GroupBox1.TabStop = False
         '
         'Form1
         '
