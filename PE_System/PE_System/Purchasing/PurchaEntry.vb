@@ -528,11 +528,11 @@ Partial Public Class PurchaEntry
             If conn.State = ConnectionState.Closed Then conn.Open()
             Dim table As New DataTable()
             Dim query As String = "SELECT i.id, i.description, " &
-                "IFNULL((SELECT ist.item_cost FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.item_cost) as item_cost, " &
-                "IFNULL((SELECT ist.avg_cost FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.avg_cost) as avg_cost, " &
-                "IFNULL((SELECT ist.selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.selling_price) as selling_price, " &
-                "IFNULL((SELECT ist.whole_selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.whole_selling_price) as wprice, " &
-                "IFNULL((SELECT ist.retail_selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.retail_selling_price) as rprice, " &
+                "i.item_cost, " &
+                "i.avg_cost, " &
+                "i.selling_price, " &
+                "i.whole_selling_price as wprice, " &
+                "i.retail_selling_price as rprice, " &
                 "IFNULL((SELECT SUM(st_qty) FROM items_stock WHERE item_id = i.id), 0) as st_qty " &
                 "FROM items i ORDER BY i.id ASC"
             Dim adapter As New MySqlDataAdapter(query, conn)
@@ -1582,11 +1582,11 @@ Partial Public Class PurchaEntry
             Dim whereClause As String = String.Join(" AND ", conditions)
 
             Dim query As String = "SELECT i.id, i.description, " &
-                "IFNULL((SELECT ist.item_cost FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.item_cost) as item_cost, " &
-                "IFNULL((SELECT ist.avg_cost FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.avg_cost) as avg_cost, " &
-                "IFNULL((SELECT ist.selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.selling_price) as selling_price, " &
-                "IFNULL((SELECT ist.whole_selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.whole_selling_price) as wprice, " &
-                "IFNULL((SELECT ist.retail_selling_price FROM items_stock ist WHERE ist.item_id = i.id ORDER BY ist.date DESC, ist.id DESC LIMIT 1), i.retail_selling_price) as rprice, " &
+                "i.item_cost, " &
+                "i.avg_cost, " &
+                "i.selling_price, " &
+                "i.whole_selling_price as wprice, " &
+                "i.retail_selling_price as rprice, " &
                 "IFNULL((SELECT SUM(st_qty) FROM items_stock WHERE item_id = i.id), 0) as st_qty " &
                 "FROM items i WHERE " & whereClause & " ORDER BY i.id ASC"
 
