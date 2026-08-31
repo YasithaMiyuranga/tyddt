@@ -211,6 +211,28 @@ Public Class credit
             If dgv.Columns.Contains("CusId") Then dgv.Columns("CusId").Visible = False
             If dgv.Columns.Contains("CusTel") Then dgv.Columns("CusTel").Visible = False
 
+            ' WhatsApp Dynamic Button Column for DataGridView1 (Customer Details tab)
+            If dgv.Name = "DataGridView1" Then
+                If Not dgv.Columns.Contains("btnWA") Then
+                    Dim waCol As New DataGridViewButtonColumn()
+                    waCol.Name = "btnWA"
+                    waCol.HeaderText = "WA"
+                    waCol.Text = "W"
+                    waCol.UseColumnTextForButtonValue = True
+                    waCol.Width = 50
+                    waCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                    waCol.FlatStyle = FlatStyle.Flat
+                    waCol.DefaultCellStyle.BackColor = Color.Gainsboro ' Grey background for unselected rows
+                    waCol.DefaultCellStyle.ForeColor = Color.DimGray ' Grey text for unselected rows
+                    waCol.DefaultCellStyle.SelectionBackColor = Color.FromArgb(37, 211, 102) ' WhatsApp Green for selected row
+                    waCol.DefaultCellStyle.SelectionForeColor = Color.White ' White text for selected row
+                    dgv.Columns.Add(waCol)
+                End If
+                dgv.Columns("btnWA").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+                dgv.Columns("btnWA").Width = 45
+                dgv.Columns("btnWA").DisplayIndex = dgv.Columns.Count - 1
+            End If
+
             ' Layout for identifiable columns
             If dgv.Columns.Contains("CusName") Then
                 dgv.Columns("CusName").HeaderText = "Customer Name"
@@ -1856,6 +1878,45 @@ Public Class credit
                 End If
             End If
         End If
+    End Sub
+
+    Private Sub DataGridView1_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridView1.CellContentClick
+        If e.RowIndex >= 0 AndAlso DataGridView1.Columns(e.ColumnIndex).Name = "btnWA" Then
+            Dim row As DataGridViewRow = DataGridView1.Rows(e.RowIndex)
+            Dim phoneNo As String = If(row.Cells("CusTel").Value?.ToString(), "")
+            OpenWhatsAppForPhone(phoneNo)
+        End If
+    End Sub
+
+    Private Sub OpenWhatsAppForPhone(phoneNo As String)
+        If String.IsNullOrEmpty(phoneNo) Then
+            MessageBox.Show("No phone number found for this customer.", "Empty Phone Number", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+        
+        ' Clean phone number
+        phoneNo = phoneNo.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "")
+        If phoneNo.Contains("/") Then
+            phoneNo = phoneNo.Split("/"c)(0).Trim()
+        End If
+        
+        If String.IsNullOrEmpty(phoneNo) Then
+            MessageBox.Show("Please enter a valid phone number first.", "Empty Phone Number", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Return
+        End If
+        
+        If phoneNo.StartsWith("0") Then
+            phoneNo = "94" & phoneNo.Substring(1)
+        ElseIf Not phoneNo.StartsWith("94") AndAlso phoneNo.Length = 9 Then
+            phoneNo = "94" & phoneNo
+        End If
+        
+        Try
+            Dim waUrl As String = "whatsapp://send?phone=" & phoneNo
+            System.Diagnostics.Process.Start(New System.Diagnostics.ProcessStartInfo(waUrl) With {.UseShellExecute = True})
+        Catch ex As Exception
+            MessageBox.Show("Error opening WhatsApp: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub pay_del_Click(sender As Object, e As EventArgs) Handles pay_del.Click
