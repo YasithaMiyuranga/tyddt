@@ -4,7 +4,7 @@ Imports System.Text
 
 Public Class TempSales
     Public Property SlotID As Integer = 0
-    Dim isElBill As Boolean = True
+    Dim isElBill As Boolean = False
     Dim dtBill As New DataTable()
     Dim selectedIndex As Integer = -1 ' To track which row is being edited
     Dim syncTimer As New Timer()
@@ -691,7 +691,7 @@ Public Class TempSales
         chkKeepStoreCredit.Visible = False ' Hidden per user request
         CheckBoxPrintAsRetail.Visible = False
         btnEl.Visible = True ' Always visible by default
-        btnEl.Text = "EL" ' Initialize text to EL since isElBill is True
+        btnEl.Text = "GR" ' Initialize text to GR since isElBill is False
         ' Set Default Cashier to currently logged in user
         If Not String.IsNullOrEmpty(Module1.UserName) Then
             cmbCashier.Text = Module1.UserName
@@ -1495,8 +1495,8 @@ Public Class TempSales
         txtCusVatId.Text = ""
         dtpCreditPeriod.Value = DateTime.Now
         selectedCustomerId = ""
-        isElBill = True
-        btnEl.Text = "EL"
+        isElBill = False
+        btnEl.Text = "GR"
         ClearEntryFields()
 
         isEditingHistory = False
@@ -1925,116 +1925,6 @@ Public Class TempSales
     End Sub
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-        ' WHOLESALE STOCK ALERT VALIDATION (5 QTY LIMIT)
-        If ComboBox1.Text <> "Quote" AndAlso CheckBoxWholesale.Checked AndAlso dtBill.Rows.Count > 0 Then
-            ' Group items by Item ID and Location
-            Dim itemTotals As New Dictionary(Of String, Decimal)()
-            Dim itemLocations As New Dictionary(Of String, String)()
-            
-            For Each row As DataRow In dtBill.Rows
-                Dim itemId As String = row("Item ID").ToString().Trim()
-                Dim loc As String = row("Location").ToString().Trim()
-                If String.IsNullOrEmpty(loc) Then loc = "MAIN STOCK"
-                
-                Dim qtyVal As Decimal = 0
-                Decimal.TryParse(row("Qty").ToString(), qtyVal)
-                
-                ' We only validate positive sale quantities
-                If qtyVal > 0 Then
-                    Dim key As String = itemId & "|" & loc
-                    If itemTotals.ContainsKey(key) Then
-                        itemTotals(key) += qtyVal
-                    Else
-                        itemTotals(key) = qtyVal
-                        itemLocations(key) = loc
-                    End If
-                End If
-            Next
-            
-            ' Perform stock alert validation for each group
-            For Each kvp In itemTotals
-                Dim parts = kvp.Key.Split("|"c)
-                Dim itemId = parts(0)
-                Dim loc = itemLocations(kvp.Key)
-                Dim totalQty = kvp.Value
-                
-                Dim currentStock As Decimal = GetCurrentStock(itemId, loc)
-                If currentStock > 0 Then
-                    If currentStock < 5 Then
-                        Dim result As DialogResult = MessageBox.Show("ප්‍රමාණවත් ප්‍රමාණයක් නොමැත. එසේ වුවද බිල save කිරීමට අවශ්‍යද? (අයිතමය: " & itemId & ")", "තොග ප්‍රමාණවත් නොවේ", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                        If result = DialogResult.No Then
-                            For i As Integer = 0 To DataGridView2.Rows.Count - 1
-                                Dim gridItemId As String = DataGridView2.Rows(i).Cells("Item ID").Value.ToString().Trim()
-                                If String.Equals(gridItemId, itemId, StringComparison.OrdinalIgnoreCase) Then
-                                    DataGridView2.ClearSelection()
-                                    DataGridView2.Rows(i).Selected = True
-                                    DataGridView2.CurrentCell = DataGridView2.Rows(i).Cells("Item ID")
-
-                                    Dim rowView As DataRowView = DirectCast(DataGridView2.Rows(i).DataBoundItem, DataRowView)
-                                    selectedIndex = dtBill.Rows.IndexOf(rowView.Row)
-
-                                    txtItemID.Text = DataGridView2.Rows(i).Cells("Item ID").Value.ToString()
-                                    txtDescription.Text = DataGridView2.Rows(i).Cells("Description").Value.ToString()
-                                    txtAmount.Text = DataGridView2.Rows(i).Cells("Selling Price").Value.ToString()
-                                    txtDiscount.Text = DataGridView2.Rows(i).Cells("Dis").Value.ToString()
-                                    txtSellingPrice1.Tag = DataGridView2.Rows(i).Cells("ItemCost").Value.ToString()
-
-                                    FetchItemByID(txtItemID.Text.Trim())
-                                    btnUpdate.Text = "Edit"
-                                    btnUpdate.BackColor = Color.White
-
-                                    txtSellingPrice1.Text = DataGridView2.Rows(i).Cells("Selling Price").Value.ToString()
-                                    txtDiscount.Text = DataGridView2.Rows(i).Cells("Dis").Value.ToString()
-                                    txtQuantity.Text = FormatQuantity(DataGridView2.Rows(i).Cells("Qty").Value)
-
-                                    txtQuantity.Focus()
-                                    txtQuantity.SelectAll()
-                                    Exit For
-                                End If
-                            Next
-                            Return
-                        End If
-                    Else
-                        Dim maxAllowed As Decimal = currentStock - 5
-                        If totalQty > maxAllowed Then
-                            Dim result As DialogResult = MessageBox.Show("මෙම අයිතමයෙන් ඔබට ලබාගත හැක්කේ " & maxAllowed.ToString("G") & " ක් පමණි. එසේ වුවද බිල save කිරීමට අවශ්‍යද? (අයිතමය: " & itemId & ")", "සීමාව ඉක්මවා ඇත", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                            If result = DialogResult.No Then
-                                For i As Integer = 0 To DataGridView2.Rows.Count - 1
-                                    Dim gridItemId As String = DataGridView2.Rows(i).Cells("Item ID").Value.ToString().Trim()
-                                    If String.Equals(gridItemId, itemId, StringComparison.OrdinalIgnoreCase) Then
-                                        DataGridView2.ClearSelection()
-                                        DataGridView2.Rows(i).Selected = True
-                                        DataGridView2.CurrentCell = DataGridView2.Rows(i).Cells("Item ID")
-
-                                        Dim rowView As DataRowView = DirectCast(DataGridView2.Rows(i).DataBoundItem, DataRowView)
-                                        selectedIndex = dtBill.Rows.IndexOf(rowView.Row)
-
-                                        txtItemID.Text = DataGridView2.Rows(i).Cells("Item ID").Value.ToString()
-                                        txtDescription.Text = DataGridView2.Rows(i).Cells("Description").Value.ToString()
-                                        txtAmount.Text = DataGridView2.Rows(i).Cells("Selling Price").Value.ToString()
-                                        txtDiscount.Text = DataGridView2.Rows(i).Cells("Dis").Value.ToString()
-                                        txtSellingPrice1.Tag = DataGridView2.Rows(i).Cells("ItemCost").Value.ToString()
-
-                                        FetchItemByID(txtItemID.Text.Trim())
-                                        btnUpdate.Text = "Edit"
-                                        btnUpdate.BackColor = Color.White
-
-                                        txtSellingPrice1.Text = DataGridView2.Rows(i).Cells("Selling Price").Value.ToString()
-                                        txtDiscount.Text = DataGridView2.Rows(i).Cells("Dis").Value.ToString()
-                                        txtQuantity.Text = FormatQuantity(DataGridView2.Rows(i).Cells("Qty").Value)
-
-                                        txtQuantity.Focus()
-                                        txtQuantity.SelectAll()
-                                        Exit For
-                                    End If
-                                Next
-                                Return
-                            End If
-                        End If
-                    End If
-                End If
-            Next
-        End If
 
         ' Try to identify by password first
         IdentifyCashierByPassword()
@@ -4157,9 +4047,9 @@ Public Class TempSales
             btnSaveRGR.Visible = False
         End If
 
-        ' Reset to EL bill by default on fresh form states
-        isElBill = True
-        btnEl.Text = "EL"
+        ' Reset to GR bill by default on fresh form states
+        isElBill = False
+        btnEl.Text = "GR"
         UpdateSessionTypeInDB()
         ApplyRoleBasedUI()
 
@@ -5674,45 +5564,7 @@ Public Class TempSales
                 End If
             End If
 
-            ' WHOLESALE STOCK ALERT VALIDATION (5 QTY LIMIT)
-            If qty > 0 AndAlso CheckBoxWholesale.Checked Then
-                Dim wholesaleLoc As String = If(ComboBoxLocation.Text IsNot Nothing, ComboBoxLocation.Text.Trim(), "MAIN STOCK")
-                If String.IsNullOrEmpty(wholesaleLoc) Then wholesaleLoc = "MAIN STOCK"
-                
-                Dim currentStock As Decimal = GetCurrentStock(txtItemID.Text.Trim(), wholesaleLoc)
-                If currentStock > 0 Then
-                    If currentStock < 5 Then
-                        Dim result As DialogResult = MessageBox.Show("ප්‍රමාණවත් ප්‍රමාණයක් නොමැත. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "තොග ප්‍රමාණවත් නොවේ", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                        If result = DialogResult.No Then
-                            txtQuantity.Focus()
-                            txtQuantity.SelectAll()
-                            Return
-                        End If
-                    Else
-                        Dim alreadyInBill As Decimal = GetTotalQtyInBill(txtItemID.Text.Trim(), -1)
-                        Dim maxAllowed As Decimal = currentStock - 5
-                        Dim maxAllowedForThisLine As Decimal = maxAllowed - alreadyInBill
 
-                        If maxAllowedForThisLine < 0 Then
-                            Dim result As DialogResult = MessageBox.Show("මෙම අයිතමයෙන් ඔබට ලබාගත හැක්කේ 0 ක් පමණි. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "සීමාව ඉක්මවා ඇත", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                            If result = DialogResult.No Then
-                                txtQuantity.Text = "0"
-                                txtQuantity.Focus()
-                                txtQuantity.SelectAll()
-                                Return
-                            End If
-                        ElseIf qty > maxAllowedForThisLine Then
-                            Dim result As DialogResult = MessageBox.Show("මෙම අයිතමයෙන් ඔබට ලබාගත හැක්කේ " & maxAllowedForThisLine.ToString("G") & " ක් පමණි. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "සීමාව ඉක්මවා ඇත", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                            If result = DialogResult.No Then
-                                txtQuantity.Text = maxAllowedForThisLine.ToString("G")
-                                txtQuantity.Focus()
-                                txtQuantity.SelectAll()
-                                Return
-                            End If
-                        End If
-                    End If
-                End If
-            End If
 
             Dim netUnitPrice As Decimal = unitPrice
             Dim lineTotal As Decimal = 0
@@ -6789,45 +6641,7 @@ If String.IsNullOrEmpty(txtCashierID.Text.Trim()) Then
                     Dim disc As Decimal = 0
                     Decimal.TryParse(txtDiscount.Text, disc)
 
-                    ' WHOLESALE STOCK ALERT VALIDATION (5 QTY LIMIT)
-                    If qty > 0 AndAlso CheckBoxWholesale.Checked Then
-                        Dim wholesaleLoc As String = If(ComboBoxLocation.Text IsNot Nothing, ComboBoxLocation.Text.Trim(), "MAIN STOCK")
-                        If String.IsNullOrEmpty(wholesaleLoc) Then wholesaleLoc = "MAIN STOCK"
-                        
-                        Dim currentStock As Decimal = GetCurrentStock(txtItemID.Text.Trim(), wholesaleLoc)
-                        If currentStock > 0 Then
-                            If currentStock < 5 Then
-                                Dim result As DialogResult = MessageBox.Show("ප්‍රමාණවත් ප්‍රමාණයක් නොමැත. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "තොග ප්‍රමාණවත් නොවේ", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                                If result = DialogResult.No Then
-                                    txtQuantity.Focus()
-                                    txtQuantity.SelectAll()
-                                    Return
-                                End If
-                            Else
-                                Dim alreadyInBill As Decimal = GetTotalQtyInBill(txtItemID.Text.Trim(), selectedIndex)
-                                Dim maxAllowed As Decimal = currentStock - 5
-                                Dim maxAllowedForThisLine As Decimal = maxAllowed - alreadyInBill
 
-                                If maxAllowedForThisLine < 0 Then
-                                    Dim result As DialogResult = MessageBox.Show("මෙම අයිතමයෙන් ඔබට ලබාගත හැක්කේ 0 ක් පමණි. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "සීමාව ඉක්මවා ඇත", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                                    If result = DialogResult.No Then
-                                        txtQuantity.Text = "0"
-                                        txtQuantity.Focus()
-                                        txtQuantity.SelectAll()
-                                        Return
-                                    End If
-                                ElseIf qty > maxAllowedForThisLine Then
-                                    Dim result As DialogResult = MessageBox.Show("මෙම අයිතමයෙන් ඔබට ලබාගත හැක්කේ " & maxAllowedForThisLine.ToString("G") & " ක් පමණි. එසේ වුවද save කිරීමට අවශ්‍යද? (අයිතමය: " & txtItemID.Text.Trim() & ")", "සීමාව ඉක්මවා ඇත", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-                                    If result = DialogResult.No Then
-                                        txtQuantity.Text = maxAllowedForThisLine.ToString("G")
-                                        txtQuantity.Focus()
-                                        txtQuantity.SelectAll()
-                                        Return
-                                    End If
-                                End If
-                            End If
-                        End If
-                    End If
 
                     ' Mandatory Return Reason logic here was removed as it's handled above and we only want it for "Return" items.
                     ' Keep qty<0 validation if you still want it globally for negative lines, but usually the "Return" button logic covers it.
