@@ -539,7 +539,7 @@ Partial Class TempSales
         Me.LabelPO.Name = "LabelPO"
         Me.LabelPO.Size = New System.Drawing.Size(130, 26)
         Me.LabelPO.TabIndex = 372
-        Me.LabelPO.Text = "P/O number"
+        Me.LabelPO.Text = "Description"
         '
         'TextBoxPO
         '

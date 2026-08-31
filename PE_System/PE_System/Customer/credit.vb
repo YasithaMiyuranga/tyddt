@@ -254,6 +254,15 @@ Public Class credit
                 End If
             End If
 
+            If dgv.Columns.Contains("Description") Then
+                If dgv.Name = "Customer_creditDataGridView1" Then
+                    dgv.Columns("Description").Visible = False
+                Else
+                    dgv.Columns("Description").HeaderText = "Description"
+                    dgv.Columns("Description").Width = 140
+                End If
+            End If
+
             ' Format Tel No if it exists (for aggregated view)
             If dgv.Columns.Contains("CusTel") Then
                 dgv.Columns("CusTel").Visible = True
@@ -2167,11 +2176,13 @@ Public Class credit
             If conn.State = ConnectionState.Open Then conn.Close()
             conn.Open()
 
-            Dim table As New DataTable()
-            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, cc.timestamps AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no " &
+            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, cc.timestamps AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no, b.po_number AS Description " &
                             "FROM customer_credit cc " &
-                            "INNER JOIN customer c ON cc.customer_id = c.id WHERE cc.is_active = 1"
+                            "INNER JOIN customer c ON cc.customer_id = c.id " &
+                            "LEFT JOIN billing b ON (cc.inv_no = b.inv_no OR (b.printed_inv_no Is Not Null AND cc.inv_no = b.printed_inv_no)) " &
+                            "WHERE cc.is_active = 1"
 
+            Dim table As New DataTable()
             Dim adapter As New MySqlDataAdapter(sql, conn)
             adapter.Fill(table)
 
