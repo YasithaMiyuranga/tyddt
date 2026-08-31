@@ -16,8 +16,8 @@ Public Class DayClosing
         btnClearClosing.BringToFront()
 
         ' Hide Petty Cash and Session History tabs
-        TabControl1.TabPages.Remove(TabPagePettyCash)
-        TabControl1.TabPages.Remove(TabPageHistory)
+        ' TabControl1.TabPages.Remove(TabPagePettyCash)
+        ' TabControl1.TabPages.Remove(TabPageHistory)
     End Sub
 
     Private Sub InitializeDatabase()

@@ -429,7 +429,7 @@ Partial Class Start
         StockRequestToolStripMenuItem.Visible = False
         StockTransferToolStripMenuItem.Visible = False
         PreviousPurchaseRequestsToolStripMenuItem.Visible = False
-        PrettyToolStripMenuItem.Visible = False
+        PrettyToolStripMenuItem.Visible = True
         FinancialTerminalToolStripMenuItem.Visible = False
         AccountingsToolStripMenuItem.Visible = False
         CurrentStockToolStripMenuItem.Visible = False
