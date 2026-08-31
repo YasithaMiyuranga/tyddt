@@ -2349,7 +2349,7 @@ Public Class TempSales
 
                                         ' 1. Try to find by Name (if provided) to avoid duplicates
                                         If Not String.IsNullOrWhiteSpace(enteredName) AndAlso Not enteredName.Equals("CASH", StringComparison.OrdinalIgnoreCase) Then
-                                            Dim checkNameSql = "SELECT id FROM customer WHERE name = @name AND id <> 1 LIMIT 1"
+                                            Dim checkNameSql = "SELECT id FROM customer WHERE deleted_at IS NULL AND name = @name AND id <> 1 LIMIT 1"
                                             Using cmdCheckName As New MySqlCommand(checkNameSql, conn, dbTrans)
                                                 cmdCheckName.Parameters.AddWithValue("@name", enteredName)
                                                 Dim resId = cmdCheckName.ExecuteScalar()
@@ -2361,7 +2361,7 @@ Public Class TempSales
 
                                         ' 2. If not found by Name, try to find by Phone (if provided)
                                         If String.IsNullOrEmpty(selectedCustomerId) AndAlso Not String.IsNullOrWhiteSpace(enteredPhone) Then
-                                            Dim checkPhoneSql = "SELECT id, name FROM customer WHERE tel_no = @tel AND id <> 1 LIMIT 1"
+                                            Dim checkPhoneSql = "SELECT id, name FROM customer WHERE deleted_at IS NULL AND tel_no = @tel AND id <> 1 LIMIT 1"
                                             Using cmdCheckPhone As New MySqlCommand(checkPhoneSql, conn, dbTrans)
                                                 cmdCheckPhone.Parameters.AddWithValue("@tel", enteredPhone)
                                                 Using drCus = cmdCheckPhone.ExecuteReader()
@@ -4628,7 +4628,7 @@ Public Class TempSales
             End If
 
             ' Base query
-            Dim localSql As String = "SELECT id as 'ID', name as 'Customer Name', tel_no as 'Phone', address as 'Address', customer_type, is_block, credit_limit, credit_period FROM customer WHERE 1=1"
+            Dim localSql As String = "SELECT id as 'ID', name as 'Customer Name', tel_no as 'Phone', address as 'Address', customer_type, is_block, credit_limit, credit_period FROM customer WHERE deleted_at IS NULL"
 
             If nameKey.Length > 0 Then
                 localSql &= " AND name LIKE @name"
@@ -4796,7 +4796,7 @@ Public Class TempSales
             If String.Equals(field, "tel_no", StringComparison.OrdinalIgnoreCase) Then
                 Dim phoneKey As String = value.Trim()
                 If phoneKey.StartsWith("0") Then
-                    sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE " &
+                    sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE deleted_at IS NULL AND " &
                           "(tel_no = @val_start OR tel_no LIKE @val_slash OR tel_no LIKE @val_comma OR tel_no LIKE @val_space OR tel_no LIKE @val_hyphen)"
                     cmd.Parameters.AddWithValue("@val_start", phoneKey)
                     cmd.Parameters.AddWithValue("@val_slash", "%/" & phoneKey & "%")
@@ -4806,7 +4806,7 @@ Public Class TempSales
                 Else
                     Dim termA As String = phoneKey
                     Dim termB As String = "0" & phoneKey
-                    sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE " &
+                    sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE deleted_at IS NULL AND " &
                           "(tel_no = @valA_start OR tel_no LIKE @valA_slash OR tel_no LIKE @valA_comma OR tel_no LIKE @valA_space OR tel_no LIKE @valA_hyphen OR " &
                           "tel_no = @valB_start OR tel_no LIKE @valB_slash OR tel_no LIKE @valB_comma OR tel_no LIKE @valB_space OR tel_no LIKE @valB_hyphen)"
                     cmd.Parameters.AddWithValue("@valA_start", termA)
@@ -4822,7 +4822,7 @@ Public Class TempSales
                     cmd.Parameters.AddWithValue("@valB_hyphen", "%-" & termB & "%")
                 End If
             Else
-                sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE " & field & " = @val"
+                sql = "SELECT id, name, address, tel_no, customer_type, is_block, credit_limit, credit_period FROM customer WHERE deleted_at IS NULL AND " & field & " = @val"
                 cmd.Parameters.AddWithValue("@val", value)
             End If
 
