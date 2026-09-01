@@ -189,7 +189,18 @@ Public Class credit
                         If amt > 0 Then
                             e.CellStyle.BackColor = Color.LightYellow
                         Else
-                            e.CellStyle.BackColor = Color.LightGreen
+                            Dim payCount As Integer = 0
+                            If dgv.Columns.Contains("PaymentCount") AndAlso row.Cells("PaymentCount").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("PaymentCount").Value) Then
+                                Integer.TryParse(row.Cells("PaymentCount").Value.ToString(), payCount)
+                            End If
+
+                            If payCount > 0 Then
+                                ' Settled through Customer Payments -> Soft Light Pink / Rose (ලා රෝස)
+                                e.CellStyle.BackColor = Color.FromArgb(255, 218, 228)
+                            Else
+                                ' Upfront Advance/Full Payment at sale -> Light Green (ලා කොළ)
+                                e.CellStyle.BackColor = Color.LightGreen
+                            End If
                         End If
                     End If
                 End If
@@ -285,6 +296,8 @@ Public Class credit
 
             ' Highlight fully paid items in Customer Details Grid (DataGridView1)
             If dgv.Name = "DataGridView1" Then
+                If dgv.Columns.Contains("PaymentCount") Then dgv.Columns("PaymentCount").Visible = False
+
                 For Each row As DataGridViewRow In dgv.Rows
                     If row.Cells.Cast(Of DataGridViewCell)().Any(Function(c) c.OwningColumn.Name = "Credit_Amount") Then
                         Dim amtVal As Decimal = 0
@@ -292,11 +305,25 @@ Public Class credit
                             Decimal.TryParse(row.Cells("Credit_Amount").Value.ToString(), amtVal)
                         End If
 
+                        Dim payCount As Integer = 0
+                        If row.Cells.Cast(Of DataGridViewCell)().Any(Function(c) c.OwningColumn.Name = "PaymentCount") Then
+                            If row.Cells("PaymentCount").Value IsNot Nothing AndAlso Not IsDBNull(row.Cells("PaymentCount").Value) Then
+                                Integer.TryParse(row.Cells("PaymentCount").Value.ToString(), payCount)
+                            End If
+                        End If
+
                         If amtVal = 0 Then
-                            row.DefaultCellStyle.BackColor = Color.FromArgb(220, 245, 220) ' Soft green for fully paid
-                            row.DefaultCellStyle.ForeColor = Color.Black
+                            If payCount > 0 Then
+                                ' Settled through Customer Payments -> Soft Light Pink / Rose (ලා රෝස)
+                                row.DefaultCellStyle.BackColor = Color.FromArgb(255, 218, 228)
+                                row.DefaultCellStyle.ForeColor = Color.Black
+                            Else
+                                ' Upfront Advance/Full Payment at sale -> Light Green (ලා කොළ)
+                                row.DefaultCellStyle.BackColor = Color.LightGreen
+                                row.DefaultCellStyle.ForeColor = Color.Black
+                            End If
                         Else
-                            row.DefaultCellStyle.BackColor = Color.White ' Default
+                            row.DefaultCellStyle.BackColor = Color.LightYellow ' Default
                             row.DefaultCellStyle.ForeColor = Color.Black
                         End If
                     End If
@@ -2196,7 +2223,8 @@ Public Class credit
             If conn.State = ConnectionState.Open Then conn.Close()
             conn.Open()
 
-            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, IFNULL(cc.complete_date, cc.timestamps) AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no, b.po_number AS Description " &
+            Dim sql As String = "SELECT cc.id AS CreId, c.name AS CusName, cc.amount AS Credit_Amount, IFNULL(cc.complete_date, cc.timestamps) AS CreditDate, c.id AS CusId, c.tel_no AS CusTel, cc.inv_no, b.po_number AS Description, " &
+                            "(SELECT COUNT(*) FROM customer_payments cp WHERE cp.inv_no = cc.inv_no) AS PaymentCount " &
                             "FROM customer_credit cc " &
                             "INNER JOIN customer c ON cc.customer_id = c.id " &
                             "LEFT JOIN billing b ON (cc.inv_no = b.inv_no OR (b.printed_inv_no Is Not Null AND cc.inv_no = b.printed_inv_no)) " &
